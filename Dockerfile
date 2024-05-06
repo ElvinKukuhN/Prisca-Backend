@@ -74,6 +74,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libzip-dev \
     apache2 \
+    openssl \
     && a2enmod rewrite
 
 # Set lokalisasi
@@ -110,13 +111,20 @@ RUN chown -R www-data:www-data /var/www/html
 # Konfigurasi Apache dan virtual host
 COPY apache-config.conf /etc/apache2/sites-available/prisca-prisca-backend.3mewj5.easypanel.host.conf
 RUN a2ensite prisca-prisca-backend.3mewj5.easypanel.host.conf
+RUN a2dissite 000-default.conf
+
+# Generate self-signed SSL certificate
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/server.prisca-prisca-backend.3mewj5.easypanel.host.key -out /etc/ssl/certs/server.prisca-prisca-backend.3mewj5.easypanel.host.crt \
+    -subj "/C=ID/ST=Jakarta/L=Jakarta/O=Contoh Company/OU=IT Department/CN=server.prisca-prisca-backend.3mewj5.easypanel.host/emailAddress=kukuhelvin20@gmail.com"
+
 COPY apache-config-ssl.conf /etc/apache2/sites-available/prisca-prisca-backend.3mewj5.easypanel.host-ssl.conf
 RUN a2ensite prisca-prisca-backend.3mewj5.easypanel.host-ssl.conf
-RUN a2dissite 000-default.conf
+# Restart Apache to apply changes
 RUN service apache2 restart
 
-# Expose port 80 and start Apache
+# Expose ports 80 and 443
 EXPOSE 80
+EXPOSE 443
 
-# Start PHP-FPM
-CMD ["php-fpm"]
+# Start Apache
+CMD ["apache2ctl", "-D", "FOREGROUND"]
