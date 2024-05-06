@@ -111,7 +111,6 @@ RUN chown -R www-data:www-data /var/www/html
 # Konfigurasi Apache dan virtual host
 COPY apache-config.conf /etc/apache2/sites-available/prisca-prisca-backend.3mewj5.easypanel.host.conf
 RUN a2ensite prisca-prisca-backend.3mewj5.easypanel.host.conf
-RUN service apache2 reload
 RUN a2dissite 000-default.conf
 
 # Generate self-signed SSL certificate
@@ -120,7 +119,6 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private
 
 COPY apache-config-ssl.conf /etc/apache2/sites-available/prisca-prisca-backend.3mewj5.easypanel.host-ssl.conf
 RUN a2ensite prisca-prisca-backend.3mewj5.easypanel.host-ssl.conf
-RUN service apache2 reload
 
 # Restart Apache to apply changes
 RUN service apache2 restart
