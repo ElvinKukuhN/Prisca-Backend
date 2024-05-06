@@ -75,7 +75,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     apache2 \
     openssl \
-    && a2enmod rewrite
+    && a2enmod rewrite ssl
 
 # Set lokalisasi
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
