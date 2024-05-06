@@ -5,7 +5,7 @@ npm-debug.log
 
 # Ignore direktori yang biasanya tidak diperlukan dalam container
 vendor
-storage
+
 # bootstrap/cache
 
 # Ignore file Docker spesifik
