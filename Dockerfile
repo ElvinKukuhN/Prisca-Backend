@@ -110,7 +110,7 @@ COPY . .
 
 # Change ownership of our applications
 RUN chmod -R 755 /var/www
-RUN chown -R www-data:www-data /var/www/public
+RUN chown -R www-data:www-data /var/www
 
 # Copy Apache site configuration
 COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
