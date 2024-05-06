@@ -109,7 +109,7 @@ RUN composer install --no-scripts --no-autoloader
 COPY . .
 
 # Change ownership of our applications
-RUN chmod -R 755 /var/www/public
+RUN chmod -R 755 /var/www
 RUN chown -R www-data:www-data /var/www/public
 
 # Copy Apache site configuration
