@@ -95,7 +95,7 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 RUN a2enmod rewrite ssl
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # Copy composer files
 COPY composer.json composer.lock ./
@@ -107,7 +107,7 @@ RUN composer install --no-scripts --no-autoloader
 COPY . .
 
 # Change ownership of our applications
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www
 
 # Copy Apache site configuration
 COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
