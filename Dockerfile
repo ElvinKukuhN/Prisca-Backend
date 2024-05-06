@@ -125,6 +125,7 @@ RUN service apache2 restart
 # Expose ports 80 and 443
 EXPOSE 80
 EXPOSE 443
+EXPOSE 9000
 
 # Start Apache
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+CMD ["apache2ctl", "-D", "FOREGROUND","php-fpm"]
