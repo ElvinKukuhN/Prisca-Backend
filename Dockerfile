@@ -110,6 +110,8 @@ RUN chown -R www-data:www-data /var/www/html
 # Konfigurasi Apache dan virtual host
 COPY apache-config.conf /etc/apache2/sites-available/prisca-prisca-backend.3mewj5.easypanel.host.conf
 RUN a2ensite prisca-prisca-backend.3mewj5.easypanel.host.conf
+COPY apache-config-ssl.conf /etc/apache2/sites-available/prisca-prisca-backend.3mewj5.easypanel.host-ssl.conf
+RUN a2ensite prisca-prisca-backend.3mewj5.easypanel.host-ssl.conf
 RUN a2dissite 000-default.conf
 RUN service apache2 restart
 
