@@ -70,6 +70,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
+    systemctl\
+    nano\
     libonig-dev \
     libxml2-dev \
     libzip-dev \
@@ -130,3 +132,4 @@ EXPOSE 9000
 
 # Start Apache
 CMD ["bash", "-c", "apache2ctl -D FOREGROUND && php-fpm"]
+
