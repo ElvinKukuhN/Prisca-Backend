@@ -109,7 +109,7 @@ RUN composer install --no-scripts --no-autoloader
 COPY . .
 
 # Change ownership of our applications
-RUN chown -R www-data:www-data /var/www
+RUN chown -R www-data:www-data /var/www/public
 
 # Copy Apache site configuration
 COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
