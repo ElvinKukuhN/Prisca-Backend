@@ -7,7 +7,7 @@ npm-debug.log
 vendor
 public
 storage
-bootstrap/cache
+# bootstrap/cache
 
 # Ignore file Docker spesifik
 .dockerignore
