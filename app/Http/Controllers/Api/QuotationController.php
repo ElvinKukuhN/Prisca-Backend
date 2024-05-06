@@ -272,5 +272,5 @@ class QuotationController extends Controller
     //     $pdf = PDF::loadView('pdf.quotation', compact('quotation', 'quotationItem', 'company_address', 'company_name', 'vendor_address', 'vendor_name'));
     //     // return view('pdf.quotation', compact('quotation', 'quotationItem', 'company_address', 'company_name'));
     //     // return $pdf->download('quotation.pdf');
-    // }    
+    // }
 }

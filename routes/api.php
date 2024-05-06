@@ -62,7 +62,6 @@ Route::middleware('auth:api', 'cors', 'checkRole:vendor')->prefix('vendor')->gro
 //Route Untuk Role Buyer
 Route::middleware('auth:api', 'cors', 'checkRole:company')->prefix('buyer')->group(function () {
 
-    Route::get('/show/allUser', [AuthController::class, 'allUser'])->name('allUser');
 
     //Profile
     Route::get('/show/profile', [AuthController::class, 'userGetProfile'])->name('showProfileUser');
@@ -136,3 +135,4 @@ Route::post('/userRegister', [AuthController::class, 'userRegister'])->name('use
 Route::post('/vendorRegister', [AuthController::class, 'vendorRegister'])->name('vendorRegister');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/show/allUser', [AuthController::class, 'allUser'])->name('allUser');

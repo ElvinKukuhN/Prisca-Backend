@@ -1,0 +1,17 @@
+# Ignore file dan direktori yang dihasilkan oleh pengembangan lokal
+
+node_modules
+npm-debug.log
+
+# Ignore direktori yang biasanya tidak diperlukan dalam container
+vendor
+public
+storage
+bootstrap/cache
+
+# Ignore file Docker spesifik
+.dockerignore
+Dockerfile
+
+# Ignore berkas konfigurasi pengembangan lokal
+.idea
