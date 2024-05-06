@@ -112,6 +112,7 @@ RUN chown -R www-data:www-data /var/www
 COPY apache-config.conf /etc/apache2/sites-available/prisca-prisca-backend.3mewj5.easypanel.host.conf
 RUN a2ensite prisca-prisca-backend.3mewj5.easypanel.host.conf
 RUN a2dissite 000-default.conf
+RUN service apache2 restart
 
 # Generate self-signed SSL certificate
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/server.prisca-prisca-backend.3mewj5.easypanel.host.key -out /etc/ssl/certs/server.prisca-prisca-backend.3mewj5.easypanel.host.crt \
