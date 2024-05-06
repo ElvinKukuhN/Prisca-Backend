@@ -1,4 +1,4 @@
-<!-- <IfModule mod_headers.c>
+<IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*" Header set
     Access-Control-Allow-Methods "*" Header set Access-Control-Allow-Headers "*"
-</IfModule> -->
+</IfModule>
