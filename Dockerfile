@@ -57,7 +57,7 @@
 # Gunakan PHP sebagai base image
 FROM php:8.2-fpm
 
-# Install dependensi yang dibutuhkan oleh Laravel
+# Install dependensi yang dibutuhkan oleh Laravel dan Apache
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -93,7 +93,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Set working directory
-WORKDIR /var/www
+WORKDIR /var/www/html
 
 # Copy composer files
 COPY composer.json composer.lock ./
@@ -105,7 +105,7 @@ RUN composer install --no-scripts --no-autoloader
 COPY . .
 
 # Change ownership of our applications
-RUN chown -R www-data:www-data /var/www
+RUN chown -R www-data:www-data /var/www/html
 
 # Konfigurasi Apache dan virtual host
 COPY apache-config.conf /etc/apache2/sites-available/prisca-prisca-backend.conf
@@ -115,4 +115,6 @@ RUN service apache2 restart
 
 # Expose port 80 and start Apache
 EXPOSE 80
-CMD ["apache2-foreground"]
+
+# Start PHP-FPM
+CMD ["php-fpm"]
