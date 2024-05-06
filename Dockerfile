@@ -128,4 +128,4 @@ EXPOSE 443
 EXPOSE 9000
 
 # Start Apache
-CMD ["apache2ctl", "-D", "FOREGROUND","php-fpm"]
+CMD ["bash", "-c", "apache2ctl -D FOREGROUND && php-fpm"]
