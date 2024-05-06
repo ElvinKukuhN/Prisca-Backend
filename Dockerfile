@@ -47,7 +47,7 @@ RUN composer install --no-scripts --no-autoloader
 COPY . .
 
 # Generate optimized autoload files
-RUN composer dump-autoload --optimize
+# RUN composer dump-autoload --optimize
 
 # Change ownership of our applications
 RUN chown -R www-data:www-data /var/www
