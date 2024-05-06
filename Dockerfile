@@ -94,7 +94,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # Copy composer files
 COPY composer.json composer.lock ./
@@ -106,7 +106,7 @@ RUN composer install --no-scripts --no-autoloader
 COPY . .
 
 # Change ownership of our applications
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www
 
 # Konfigurasi Apache dan virtual host
 COPY apache-config.conf /etc/apache2/sites-available/prisca-prisca-backend.3mewj5.easypanel.host.conf
