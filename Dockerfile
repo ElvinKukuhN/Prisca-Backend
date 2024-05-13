@@ -131,6 +131,8 @@ RUN a2ensite prisca-backend.3mewj5.easypanel.host-ssl.conf
 
 RUN composer update
 
+RUN chmod -R 775 /var/www/storage
+RUN chown -R www-data:www-data /var/www/storage
 
 # Expose ports 80 and 443
 EXPOSE 80
