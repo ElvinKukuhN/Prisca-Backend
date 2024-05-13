@@ -129,6 +129,9 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private
 COPY apache-config-ssl.conf /etc/apache2/sites-available/prisca-backend.3mewj5.easypanel.host-ssl.conf
 RUN a2ensite prisca-backend.3mewj5.easypanel.host-ssl.conf
 
+RUN composer update
+
+
 # Expose ports 80 and 443
 EXPOSE 80
 EXPOSE 443
