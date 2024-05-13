@@ -115,6 +115,8 @@ Route::middleware('auth:api', 'cors', 'checkRole:company')->prefix('buyer')->gro
     // Approval Orders
     Route::post('/create/approvalOrder', [ApprovalRequestController::class, 'approvalOrderCreate'])->name('approvalOrderCreate');
     Route::get('/show/approvalOrder/{code}', [ApprovalRequestController::class, 'approvalOrderGet'])->name('approvalOrderGet');
+
+    
 });
 
 //Route Untuk User Approval
