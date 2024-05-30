@@ -100,7 +100,7 @@ class ApprovalRequestController extends Controller
             $approvalRequestsData[] = [
                 'id' => $approvalRequest->id,
                 'user_id' => $approvalRequest->user_id,
-                'user_name' => $approvalRequest->user->name, // Ambil nama pengguna dari relasi 'user'
+                'user_name' => $approvalRequest->user->name,
                 'doc_code' => $approvalRequest->doc_code,
                 'sequence' => $approvalRequest->sequence,
                 'approval_status' => $approvalRequest->approval_status,

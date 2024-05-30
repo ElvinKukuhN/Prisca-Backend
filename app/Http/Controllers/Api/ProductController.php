@@ -402,7 +402,10 @@ class ProductController extends Controller
             $other->tags = $request->tags;
             $other->save();
 
+            dd($request->file('image'));
+
             if ($request->hasFile('image')) {
+
                 $images = [];
                 foreach ($request->file('image') as $image) {
                     $imageName = time() . '-' . uniqid() . '.' . $image->getClientOriginalExtension();

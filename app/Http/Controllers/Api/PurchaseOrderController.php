@@ -58,7 +58,8 @@ class PurchaseOrderController extends Controller
         }
     }
 
-    public function purchaseOrderGetById ($id) {
+    public function purchaseOrderGetById($id)
+    {
         $purchaseOrders = PurchaseOrder::find($id);
 
         if ($purchaseOrders) {
@@ -78,4 +79,6 @@ class PurchaseOrderController extends Controller
             ], 404);
         }
     }
+
+
 }

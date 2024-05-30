@@ -116,7 +116,6 @@ Route::middleware('auth:api', 'cors', 'checkRole:company')->prefix('buyer')->gro
     Route::post('/create/approvalOrder', [ApprovalRequestController::class, 'approvalOrderCreate'])->name('approvalOrderCreate');
     Route::get('/show/approvalOrder/{code}', [ApprovalRequestController::class, 'approvalOrderGet'])->name('approvalOrderGet');
 
-    
 });
 
 //Route Untuk User Approval
@@ -137,4 +136,3 @@ Route::post('/userRegister', [AuthController::class, 'userRegister'])->name('use
 Route::post('/vendorRegister', [AuthController::class, 'vendorRegister'])->name('vendorRegister');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/show/allUser', [AuthController::class, 'allUser'])->name('allUser');

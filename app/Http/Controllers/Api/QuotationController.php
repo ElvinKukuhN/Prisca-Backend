@@ -257,20 +257,21 @@ class QuotationController extends Controller
         }
     }
 
-    // public function quotationPDF($id) // kirim pdf Ke Database
-    // {
-    //     $quotation = RequestForQoutation::find($id);
+    public function quotationFixall()
+    {
+        $userId = auth()->user()->id;
 
-    //     $quotationItem = $quotation->quotations;
+        $quotation = RequestForQoutation::join('purchase_requests', 'request_for_qoutations.purchase_request_id', '=', 'purchase_requests.id')
+            ->where('purchase_requests.user_id', $userId)
+            ->select('request_for_qoutations.*')
+            ->distinct()
+            ->get();
 
-    //     $company_address = $quotation->purchaseRequest->user->userCompanies->first()->address;
-    //     $company_name = $quotation->purchaseRequest->user->userCompanies->first()->company->name ?? null;
+        return response()->json([
+            'message' => 'Success',
+            'quotation' => $quotation
+        ], 200);
 
-    //     $vendor_address = auth()->user()->masterVendor->alamat;
-    //     $vendor_name = auth()->user()->name;
 
-    //     $pdf = PDF::loadView('pdf.quotation', compact('quotation', 'quotationItem', 'company_address', 'company_name', 'vendor_address', 'vendor_name'));
-    //     // return view('pdf.quotation', compact('quotation', 'quotationItem', 'company_address', 'company_name'));
-    //     // return $pdf->download('quotation.pdf');
-    // }
+    }
 }
