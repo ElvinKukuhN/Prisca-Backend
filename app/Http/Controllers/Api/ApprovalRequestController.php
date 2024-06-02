@@ -7,6 +7,7 @@ use App\Models\ApprovalRequest;
 use App\Models\PurchaseRequest;
 use App\Http\Controllers\Controller;
 use App\Models\PurchaseOrder;
+use Illuminate\Support\Facades\DB;
 
 class ApprovalRequestController extends Controller
 {
@@ -38,28 +39,29 @@ class ApprovalRequestController extends Controller
 
     public function approvalRequestGet($code)
     {
-        // Cari permintaan persetujuan berdasarkan doc_code
-        $approvalRequests = ApprovalRequest::where('doc_code', $code)->where('doc_type', 'pr')
+        // Fetch approval requests based on doc_code and doc_type
+        $approvalRequests = ApprovalRequest::where('doc_code', $code)
+            ->where('doc_type', 'pr')
             ->orderBy('sequence', 'asc')
             ->get();
 
-        // Periksa apakah ada hasil
+        // Check if there are any approval requests
         if ($approvalRequests->isEmpty()) {
             return response()->json([
                 'message' => 'No approval requests found for the given doc_code'
             ], 404);
         }
 
-        // Inisialisasi array untuk menyimpan data permintaan persetujuan
+        // Initialize array to store approval request data
         $approvalRequestsData = [];
 
-        // Loop melalui setiap permintaan persetujuan
+        // Loop through each approval request
         foreach ($approvalRequests as $approvalRequest) {
-            // Tambahkan data permintaan persetujuan ke dalam array
+            // Add approval request data to array
             $approvalRequestsData[] = [
                 'id' => $approvalRequest->id,
                 'user_id' => $approvalRequest->user_id,
-                'user_name' => $approvalRequest->user->name, // Ambil nama pengguna dari relasi 'user'
+                'user_name' => $approvalRequest->user->name, // Get user name from the 'user' relation
                 'doc_code' => $approvalRequest->doc_code,
                 'sequence' => $approvalRequest->sequence,
                 'approval_status' => $approvalRequest->approval_status,
@@ -67,9 +69,80 @@ class ApprovalRequestController extends Controller
             ];
         }
 
-        // Kembalikan respons JSON dengan data permintaan persetujuan
+        // Return JSON response with approval request data
         return response()->json([
             'message' => 'Approval requests found for the given doc_code',
+            'approvalRequests' => $approvalRequestsData
+        ], 200);
+    }
+
+    public function approvalRequestDetail($code)
+    {
+        // Fetch approval requests based on doc_code and doc_type
+        $approvalRequests = ApprovalRequest::where('doc_code', $code)
+            ->where('doc_type', 'pr')
+            ->orderBy('sequence', 'asc')
+            ->get();
+
+        // Check if there are any approval requests
+        if ($approvalRequests->isEmpty()) {
+            return response()->json([
+                'message' => 'No approval requests found for the given doc_code'
+            ], 404);
+        }
+
+        // Assume all approval requests are related to the same purchase request
+        $purchaseRequest = $approvalRequests->first()->purchaseRequest;
+        $lineItems = $purchaseRequest->lineItems;
+
+        // Initialize array to store approval request data
+        $approvalRequestsData = [];
+
+        // Loop through each approval request
+        foreach ($approvalRequests as $approvalRequest) {
+            // Add approval request data to array
+            $approvalRequestsData[] = [
+                'id' => $approvalRequest->id,
+                'user_id' => $approvalRequest->user_id,
+                'user_name' => $approvalRequest->user->name,
+                'company_detail' => [
+                    'company_name' => $approvalRequest->user->userCompanies->first()->company->name ?? null,
+                    'divisi_name' => $approvalRequest->user->userCompanies->first()->divisi->name ?? null,
+                    'departemen_name' => $approvalRequest->user->userCompanies->first()->departemen->name ?? null,
+                ],
+                'doc_code' => $approvalRequest->doc_code,
+                'sequence' => $approvalRequest->sequence,
+                'approval_status' => $approvalRequest->approval_status,
+                'last_activity' => $approvalRequest->last_activity
+            ];
+        }
+
+        // Initialize array to store line item data
+        $lineItemsData = [];
+        foreach ($lineItems as $lineItem) {
+            if ($lineItem->purchaseRequest->code === $code) {
+                $lineItemsData[] = [
+                    'id' => $lineItem->id,
+                    'purchase_request_id' => $lineItem->purchase_request_id,
+                    'vendor_id' => $lineItem->product->user_id,
+                    'vendor_name' => $lineItem->product->user->name,
+                    'product_name' => $lineItem->product->name,
+                    'product_id' => $lineItem->product_id,
+                    'quantity' => $lineItem->quantity,
+                    'name' => $lineItem->name,
+                    'price' => $lineItem->price
+                ];
+            }
+        }
+
+        // Return JSON response with approval request data
+        return response()->json([
+            'message' => 'Approval requests found for the given doc_code',
+            'purchaseRequest' => [
+                'id' => $purchaseRequest->id,
+                'code' => $purchaseRequest->code,
+                'lineItems' => $lineItemsData
+            ],
             'approvalRequests' => $approvalRequestsData
         ], 200);
     }
@@ -294,6 +367,7 @@ class ApprovalRequestController extends Controller
             ->orderBy('sequence', 'asc')
             ->get();
 
+        // $lineItems = $quotation->;
         // Periksa apakah ada hasil
         if ($approvalOrders->isEmpty()) {
             return response()->json([
@@ -322,6 +396,66 @@ class ApprovalRequestController extends Controller
         return response()->json([
             'message' => 'Approval orders found for the given doc_code',
             'approvalOrders' => $approvalOrdersData
+        ], 200);
+    }
+
+    public function approvalOrderDetail($code)
+    {
+        //Cari permintaan persetujuan berdasarkan doc_code
+        $approvalOrders = ApprovalRequest::where('doc_code', $code)
+            ->where('doc_type', 'po')
+            ->orderBy('sequence', 'asc')
+            ->get();
+
+        // Check if there are any approval requests
+        if ($approvalOrders->isEmpty()) {
+            return response()->json([
+                'message' => 'No approval requests found for the given doc_code'
+            ], 404);
+        }
+
+        $purchaseOrders = DB::table('purchase_orders as po')
+            ->join('request_for_qoutations as rfq', 'rfq.id', '=', 'po.request_for_qoutations_id')
+            ->join('quotations as quo', 'quo.request_for_qoutation_id', '=', 'rfq.id')
+            ->join('users', 'rfq.user_id', '=', 'users.id')
+            ->where('po.code', $code)
+            ->select('quo.*', 'users.name as vendor_name')
+            ->get();
+
+
+        $PO = $approvalOrders->first()->purchaseOrder;
+
+        // Inisialisasi array untuk menyimpan data permintaan persetujuan
+        $approvalOrdersData = [];
+
+        // Loop melalui setiap permintaan persetujuan
+        foreach ($approvalOrders as $approvalOrder) {
+            // Tambahkan data permintaan persetujuan ke dalam array
+            $approvalOrdersData[] = [
+                'id' => $approvalOrder->id,
+                'user_id' => $approvalOrder->user_id,
+                'user_name' => $approvalOrder->user->name, // Ambil nama pengguna dari relasi 'user'
+                'company_detail' => [
+                    'company_name' => $approvalOrders->first()->user->userCompanies->first()->company->name ?? null,
+                    'divisi_name' => $approvalOrders->first()->user->userCompanies->first()->divisi->name ?? null,
+                    'departemen_name' => $approvalOrders->first()->user->userCompanies->first()->departemen->name ?? null,
+                ],
+                'doc_code' => $approvalOrder->doc_code,
+                'sequence' => $approvalOrder->sequence,
+                'approval_status' => $approvalOrder->approval_status,
+                'last_activity' => $approvalOrder->last_activity
+            ];
+        }
+
+        // Kembalikan respons JSON dengan data permintaan persetujuan
+        return response()->json([
+            'message' => 'Approval orders found for the given doc_code',
+            'purchaseOrders' => [
+                'id' => $PO->id,
+                'code' => $PO->code,
+                'line_items' => $purchaseOrders
+            ],
+            'approvalOrders' => $approvalOrdersData,
         ], 200);
     }
 
@@ -512,5 +646,4 @@ class ApprovalRequestController extends Controller
             ], 400);
         }
     }
-
 }

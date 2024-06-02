@@ -96,6 +96,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(RequestForQoutation::class);
     }
 
+    public function order()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function getKeyType()
     {
         return 'string';

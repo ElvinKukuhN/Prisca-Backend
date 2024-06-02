@@ -31,32 +31,32 @@ use App\Models\ApprovalRequest;
 //Route Untuk Role Vendor
 Route::middleware('auth:api', 'cors', 'checkRole:vendor')->prefix('vendor')->group(function () {
     //Product
-    Route::post('/create/product', [ProductController::class, 'store'])->name('addProduct');
-    Route::get('/show/productByUserId', [ProductController::class, 'showByUserId'])->name('productByUserId');
-    Route::get('/show/product/{id}', [ProductController::class, 'show'])->name('product');
-    Route::post('/updateProduct/{id}', [ProductController::class, 'update'])->name('updateProduct');
-    Route::delete('/deleteProduct/{id}', [ProductController::class, 'destroy'])->name('deleteProduct');
+    Route::post('/product', [ProductController::class, 'store'])->name('addProduct');
+    Route::get('/product', [ProductController::class, 'showByUserId'])->name('productByUserId');
+    Route::get('/product/{id}', [ProductController::class, 'show'])->name('product');
+    Route::post('/product/{id}', [ProductController::class, 'update'])->name('updateProduct');
+    Route::delete('/product/{id}', [ProductController::class, 'destroy'])->name('deleteProduct');
 
     //Category, Group, Etalase, Currency
-    Route::get('/show/category', [CategoryController::class, 'index'])->name('showCategory');
-    Route::get('/show/group', [GroupController::class, 'index'])->name('showGroup');
-    Route::get('/show/etalase', [EtalaseController::class, 'index'])->name('showEtalase');
-    Route::get('/show/currency', [CurrencyController::class, 'index'])->name('showCurrency');
-    Route::get('/show/drop', [ProductController::class, 'drop'])->name('showDrop');
+    Route::get('/category', [CategoryController::class, 'index'])->name('showCategory');
+    Route::get('/group', [GroupController::class, 'index'])->name('showGroup');
+    Route::get('/etalase', [EtalaseController::class, 'index'])->name('showEtalase');
+    Route::get('/currency', [CurrencyController::class, 'index'])->name('showCurrency');
+    Route::get('/drop', [ProductController::class, 'drop'])->name('showDrop');
 
     //Profile
-    Route::get('/show/profile', [AuthController::class, 'vendorGetProfile'])->name('showProfileVendor');
-    Route::post('/update/profile', [AuthController::class, 'vendorUpdateProfile'])->name('updateProfileVendor');
+    Route::get('/profile', [AuthController::class, 'vendorGetProfile'])->name('showProfileVendor');
+    Route::post('/profile', [AuthController::class, 'vendorUpdateProfile'])->name('updateProfileVendor');
 
     //Master
     Route::post('/master', [AuthController::class, 'vendorMasterCreate'])->name('master');
 
     // Quotation
-    Route::get('/show/quotation', [QuotationController::class, 'quotationShow'])->name('showQuotation');
-    Route::get('/show/quotation/{id}', [QuotationController::class, 'quotationShowById'])->name('quotationShowById');
-    Route::post('/create/quotation/{id}', [QuotationController::class, 'quotationFromVendor'])->name('quotationFromVendor');
-    Route::get('/show/quotationFix/{id}', [QuotationController::class, 'quotationFixGet'])->name('quotationFixGet');
-    Route::post('/send/quotation/{id}/pdf', [QuotationController::class, 'quotationFixPDFSendToBuyer'])->name('quotationFixPDFSendToBuyer');
+    Route::get('/quotation', [QuotationController::class, 'quotationShow'])->name('showQuotation');
+    Route::get('/quotation/{id}', [QuotationController::class, 'quotationShowById'])->name('quotationShowById');
+    Route::post('/quotation/{id}', [QuotationController::class, 'quotationFromVendor'])->name('quotationFromVendor');
+    Route::get('/quotationFix/{id}', [QuotationController::class, 'quotationFixGet'])->name('quotationFixGet');
+    Route::post('/quotation/{id}/pdf', [QuotationController::class, 'quotationFixPDFSendToBuyer'])->name('quotationFixPDFSendToBuyer');
 });
 
 //Route Untuk Role Buyer
@@ -64,71 +64,73 @@ Route::middleware('auth:api', 'cors', 'checkRole:company')->prefix('buyer')->gro
 
 
     //Profile
-    Route::get('/show/profile', [AuthController::class, 'userGetProfile'])->name('showProfileUser');
-    Route::post('/update/profile', [AuthController::class, 'userUpdateProfile'])->name('updateProfileUser');
+    Route::get('/profile', [AuthController::class, 'userGetProfile'])->name('showProfileUser');
+    Route::post('/profile', [AuthController::class, 'userUpdateProfile'])->name('updateProfileUser');
 
     //Divisi
-    Route::get('/show/divisi', [DivisiController::class, 'divisiIndex'])->name('showDivisi');
-    Route::get('/show/divisi/{code}', [DivisiController::class, 'divisiShow'])->name('showDivisiById');
-    Route::post('/createDivisi', [DivisiController::class, 'divisiStore'])->name('createDivisi');
+    Route::get('/divisi', [DivisiController::class, 'divisiIndex'])->name('showDivisi');
+    Route::get('/divisi/{code}', [DivisiController::class, 'divisiShow'])->name('showDivisiById');
+    Route::post('/divisi', [DivisiController::class, 'divisiStore'])->name('createDivisi');
 
     //Departemen
-    Route::get('/show/departemen', [DepartemenController::class, 'departemenIndex'])->name('showDepartemen');
-    Route::get('/show/departemen/{code}', [DepartemenController::class, 'departemenShow'])->name('showDepartemenById');
-    Route::post('/createDepartemen', [DepartemenController::class, 'departemenCreate'])->name('createDepartemen');
+    Route::get('/departemen', [DepartemenController::class, 'departemenIndex'])->name('showDepartemen');
+    Route::post('/departemen', [DepartemenController::class, 'departemenCreate'])->name('createDepartemen');
+    Route::get('/departemen/{code}', [DepartemenController::class, 'departemenShow'])->name('showDepartemenById');
 
     //Product
-    Route::get('/show/allProduct', [ProductController::class, 'index'])->name('allProduct');
-    Route::get('/show/product/{id}', [ProductController::class, 'show'])->name('product');
+    Route::get('/product', [ProductController::class, 'index'])->name('allProduct');
+    Route::get('/product/{id}', [ProductController::class, 'show'])->name('product');
 
     //Cart
-    Route::post('/addToCart', [CartController::class, 'addToCart'])->name('addToCart');
-    Route::get('/show/cart', [CartController::class, 'getCart'])->name('showCart');
-    Route::delete('/removeCart/{id}', [CartController::class, 'removeCart'])->name('removeCart');
-    Route::put('/updateCart/{id}', [CartController::class, 'updateCart'])->name('updateCart');
+    Route::post('/cart', [CartController::class, 'addToCart'])->name('addToCart');
+    Route::get('/cart', [CartController::class, 'getCart'])->name('showCart');
+    Route::delete('/cart/{id}', [CartController::class, 'removeCart'])->name('removeCart');
+    Route::put('/cart/{id}', [CartController::class, 'updateCart'])->name('updateCart');
 
     //PR
-    Route::post('/createPurchaseRequest', [PurchaseRequestController::class, 'createPurchaseRequest'])->name('createPurchaseRequest');
+    Route::post('/purchaseRequest', [PurchaseRequestController::class, 'createPurchaseRequest'])->name('createPurchaseRequest');
     // Route::get('/show/purchaseRequest', [PurchaseRequestController::class, 'getPurchaseRequest'])->name('showPurchaseRequest');
-    Route::get('/show/purchaseRequest', [PurchaseRequestController::class, 'getPurchaseRequestByUserId'])->name('showPurchaseRequestByUserId');
-    Route::get('/show/purchaseRequest/{id}', [PurchaseRequestController::class, 'getPurchaseRequestById'])->name('showPurchaseRequestById');
+    Route::get('/purchaseRequest', [PurchaseRequestController::class, 'getPurchaseRequestByUserId'])->name('showPurchaseRequestByUserId');
+    Route::get('/purchaseRequest/{id}', [PurchaseRequestController::class, 'getPurchaseRequestById'])->name('showPurchaseRequestById');
     Route::post('/updateLineItem/{id}', [PurchaseRequestController::class, 'updateLineItem'])->name('updateLineItem');
 
     //user Approval
-    Route::post('/create/userApproval', [AuthController::class, 'userApprovalAdd'])->name('userApproval.store');
-    Route::get('/show/userApproval', [AuthController::class, 'userApprovalGet'])->name('userApproval.get');
-    Route::delete('/delete/userApproval/{id}', [AuthController::class, 'userApprovalDelete'])->name('userApproval.delete');
+    Route::post('/userApproval', [AuthController::class, 'userApprovalAdd'])->name('userApproval.store');
+    Route::get('/userApproval', [AuthController::class, 'userApprovalGet'])->name('userApproval.get');
+    Route::delete('/userApproval/{id}', [AuthController::class, 'userApprovalDelete'])->name('userApproval.delete');
 
     //Approval Request
-    Route::post('/create/approvalRequest', [ApprovalRequestController::class, 'approvalRequestCreate'])->name('approvalRequestCreate');
-    Route::get('/show/approvalRequest/{code}', [ApprovalRequestController::class, 'approvalRequestGet'])->name('approvalRequestGet');
+    Route::post('/approvalRequest', [ApprovalRequestController::class, 'approvalRequestCreate'])->name('approvalRequestCreate');
+    Route::get('/approvalRequest/{code}', [ApprovalRequestController::class, 'approvalRequestGet'])->name('approvalRequestGet');
 
     // Quotation
-    Route::post('/create/requestForQuotation', [QuotationController::class, 'quotationRequest'])->name('quotationRequest');
-    Route::get('/show/quotationFix/{id}', [QuotationController::class, 'quotationFixGet'])->name('quotationFixGet');
+    Route::post('/requestForQuotation', [QuotationController::class, 'quotationRequest'])->name('quotationRequest');
+    Route::get('/quotationFix/{id}', [QuotationController::class, 'quotationFixGet'])->name('quotationFixGet');
+    Route::get('/quotationFix', [QuotationController::class, 'quotationFixall'])->name('quotationFixall');
 
     // Purchase Order
-    Route::post('/create/purchaseOrder/{id}', [PurchaseOrderController::class, 'purchaseOrderCreate'])->name('purchaseOrderCreate');
-    Route::get('/show/purchaseOrder', [PurchaseOrderController::class, 'purchaseOrderGetByUserId'])->name('purchaseOrderGetByUserId');
-    Route::get('/show/purchaseOrder/{id}', [PurchaseOrderController::class, 'purchaseOrderGetById'])->name('purchaseOrderGetById');
+    Route::post('/purchaseOrder', [PurchaseOrderController::class, 'purchaseOrderCreate'])->name('purchaseOrderCreate');
+    Route::get('/purchaseOrder', [PurchaseOrderController::class, 'purchaseOrderGetByUserId'])->name('purchaseOrderGetByUserId');
+    Route::get('/purchaseOrder/{id}', [PurchaseOrderController::class, 'purchaseOrderGetById'])->name('purchaseOrderGetById');
 
     // Approval Orders
-    Route::post('/create/approvalOrder', [ApprovalRequestController::class, 'approvalOrderCreate'])->name('approvalOrderCreate');
-    Route::get('/show/approvalOrder/{code}', [ApprovalRequestController::class, 'approvalOrderGet'])->name('approvalOrderGet');
-
+    Route::post('/approvalOrder', [ApprovalRequestController::class, 'approvalOrderCreate'])->name('approvalOrderCreate');
+    Route::get('/approvalOrder/{code}', [ApprovalRequestController::class, 'approvalOrderGet'])->name('approvalOrderGet');
 });
 
-//Route Untuk User Approval
+//Route Untuk User Approval0
 Route::middleware('auth:api', 'cors', 'checkRole:user_approval')->prefix('userApproval')->group(function () {
     // Approval Request
-    Route::get('/show/approvalRequest', [ApprovalRequestController::class, 'approvalRequestGetByUserId'])->name('approvalRequestGetByUserId');
-    Route::post('/accept/approvalRequest/{code}', [ApprovalRequestController::class, 'approvalRequestAccept'])->name('approvalRequestAccept');
-    Route::post('/reject/approvalRequest/{code}', [ApprovalRequestController::class, 'approvalRequestReject'])->name('approvalRequestReject');
+    Route::get('/approvalRequest', [ApprovalRequestController::class, 'approvalRequestGetByUserId'])->name('approvalRequestGetByUserId');
+    Route::get('/approvalRequest/{code}', [ApprovalRequestController::class, 'approvalRequestDetail'])->name('approvalRequestDetail');
+    Route::post('/approvalRequest/{code}/accept', [ApprovalRequestController::class, 'approvalRequestAccept'])->name('approvalRequestAccept');
+    Route::post('/approvalRequest/{code}/reject', [ApprovalRequestController::class, 'approvalRequestReject'])->name('approvalRequestReject');
 
     // Approval Order
-    Route::get('/show/approvalOrder', [ApprovalRequestController::class, 'approvalOrderGetByUserId'])->name('approvalOrderGetByUserId');
-    Route::post('/accept/approvalOrder/{code}', [ApprovalRequestController::class, 'approvalOrderAccept'])->name('approvalOrderAccept');
-    Route::post('/reject/approvalOrder/{code}', [ApprovalRequestController::class, 'approvalOrderReject'])->name('approvalOrderReject');
+    Route::get('/approvalOrder', [ApprovalRequestController::class, 'approvalOrderGetByUserId'])->name('approvalOrderGetByUserId');
+    Route::get('/approvalOrder/{code}', [ApprovalRequestController::class, 'approvalOrderDetail'])->name('approvalOrderDetail');
+    Route::post('/approvalOrder/{code}/accept', [ApprovalRequestController::class, 'approvalOrderAccept'])->name('approvalOrderAccept');
+    Route::post('/approvalOrder/{code}/reject', [ApprovalRequestController::class, 'approvalOrderReject'])->name('approvalOrderReject');
 });
 
 

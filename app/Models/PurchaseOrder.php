@@ -19,13 +19,18 @@ class PurchaseOrder extends Model
 
     use UuidTraits;
 
-    public function requestForQuotation()
+    public function requestForQoutation()
     {
-        return $this->hasMany(RequestForQoutation::class);
+        return $this->belongsTo(RequestForQoutation::class);
     }
 
     public function approvalRequests()
     {
         return $this->hasMany(ApprovalRequest::class, 'doc_code', 'code');
+    }
+
+    public function order()
+    {
+        return $this->hasOne(Order::class);
     }
 }

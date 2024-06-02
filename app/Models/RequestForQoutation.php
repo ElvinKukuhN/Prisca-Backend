@@ -36,6 +36,6 @@ class RequestForQoutation extends Model
 
     public function purchaseOrder()
     {
-        return $this->belongsTo(PurchaseOrder::class);
+        return $this->hasMany(PurchaseOrder::class);
     }
 }

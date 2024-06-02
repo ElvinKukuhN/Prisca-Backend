@@ -326,7 +326,7 @@ class ProductController extends Controller
                 'feature' => 'required',
                 'partNumber' => 'required',
                 'satuan' => 'required',
-                'video' => 'required',
+                // 'video' => 'required',
                 'condition' => 'required',
                 'etalase_id' => 'required',
                 'currency_id' => 'required',
@@ -354,15 +354,24 @@ class ProductController extends Controller
             $product->status = $request->status;
             $product->save();
 
+            //Bagian Specification produk
+            $specificationProduct = SpecificationDetail::where('product_id', $product->id)->first();
             if ($request->hasFile('video')) {
+                // Hapus video lama jika ada
+                if ($specificationProduct->video) {
+                    $oldVideoPath = public_path('videos') . '/' . $specificationProduct->video;
+                    if (file_exists($oldVideoPath)) {
+                        unlink($oldVideoPath);
+                    }
+                }
+
+                // Mengunggah video baru
                 $videoName = time() . '-' . uniqid() . '.' . $request->video->getClientOriginalExtension();
                 $request->video->move(public_path('videos'), $videoName);
                 $video = $videoName;
             } else {
                 $video = null;
             }
-
-            $specificationProduct = SpecificationDetail::where('product_id', $product->id)->first();
             $specificationProduct->productSpecification = $request->productSpecification;
             $specificationProduct->technicalSpecification = $request->technicalSpecification;
             $specificationProduct->feature = $request->feature;
@@ -402,8 +411,6 @@ class ProductController extends Controller
             $other->tags = $request->tags;
             $other->save();
 
-            dd($request->file('image'));
-
             if ($request->hasFile('image')) {
 
                 $images = [];
@@ -413,6 +420,17 @@ class ProductController extends Controller
                     $images[] = $imageName;
                 }
 
+                // Menghapus gambar lama
+                $oldImages = Product_Image::where('product_id', $product->id)->get();
+                foreach ($oldImages as $oldImage) {
+                    $imagePath = public_path('images') . '/' . $oldImage->image;
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath);
+                    }
+                    $oldImage->delete();
+                }
+
+                // Menambahkan gambar baru
                 foreach ($images as $image) {
                     Product_Image::create([
                         'product_id' => $product->id,

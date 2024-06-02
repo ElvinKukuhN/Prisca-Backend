@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use Barryvdh\DomPDF\Facade\Pdf;
+use Log;
 use App\Models\Quotation;
 use Illuminate\Http\Request;
 use App\Models\PurchaseRequest;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 use App\Models\RequestForQoutation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -207,71 +209,97 @@ class QuotationController extends Controller
     {
         $quotation = RequestForQoutation::find($id);
 
-        // Inisialisasi array untuk menampung data semua line items
-        $quotationData = [];
-
-        if ($quotation) {
-            // Iterasi melalui setiap line item yang terkait dengan purchase request pada permintaan penawaran harga saat ini
-            foreach ($quotation->quotations as $quotationItem) {
-                // Periksa apakah produk pada line item memiliki user yang sama dengan pengguna yang sedang terautentikasi
-                if ($quotation->user_id === auth()->user()->id) {
-                    // Tambahkan data line item ke dalam array jika belum ada
-                    $exists = false;
-                    foreach ($quotationData as $data) {
-                        if ($data['product_name'] === $quotationItem->name && $data['quantity'] === $quotationItem->quantity && $data['product_price'] === $quotationItem->price) {
-                            $exists = true;
-                            break;
-                        }
-                    }
-                    if (!$exists) {
-                        $product_price = $quotationItem->price;
-                        $quotationData[] = [
-                            'id' => $quotationItem->id,
-                            'product_name' => $quotationItem->name,
-                            'quantity' => $quotationItem->quantity,
-                            'product_price' => $product_price,
-                            'amount' => $quotationItem->quantity * $product_price
-                        ];
-                    }
-                }
-            }
-
-            return response()->json([
-                'message' => 'Success',
-                'quotation' => [
-                    'id' => $quotation->id,
-                    'code' => $quotation->code,
-                    'company_name' => $quotation->purchaseRequest->user->userCompanies->first()->company->name ?? null,
-                    'updatet_at' => $quotation->created_at->format('d-m-Y'),
-                    'total_price' => $quotation->quotations->sum(function ($quotationItem) {
-                        return $quotationItem->quantity * $quotationItem->price;
-                    }),
-                    'pdf' => asset('pdf/quotation/' . $quotation->quo_doc) ?? null, // URL untuk mengakses PDF
-                    'line_items' => $quotationData
-                ]
-            ], 200);
-        } else {
+        if (!$quotation) {
             return response()->json([
                 'message' => 'Quotation Not Found !!!'
             ], 404);
         }
+
+        // Initialize array to hold all line item data
+        $quotationData = [];
+
+        foreach ($quotation->quotations as $quotationItem) {
+            $exists = false;
+            foreach ($quotationData as $data) {
+                if (
+                    $data['product_name'] === $quotationItem->name &&
+                    $data['quantity'] === $quotationItem->quantity &&
+                    $data['product_price'] === $quotationItem->price
+                ) {
+                    $exists = true;
+                    break;
+                }
+            }
+
+            // Add line item data to array if it doesn't exist
+            if (!$exists) {
+                $product_price = $quotationItem->price;
+                $quotationData[] = [
+                    'id' => $quotationItem->id,
+                    'product_name' => $quotationItem->name,
+                    'quantity' => $quotationItem->quantity,
+                    'product_price' => $product_price,
+                    'amount' => $quotationItem->quantity * $product_price
+                ];
+            }
+        }
+
+        // Calculate total price
+        $total_price = $quotation->quotations->sum(function ($quotationItem) {
+            return $quotationItem->quantity * $quotationItem->price;
+        });
+
+        // Prepare response data
+        $response_data = [
+            'id' => $quotation->id,
+            'code' => $quotation->code,
+            'company_name' => $quotation->purchaseRequest->user->userCompanies->first()->company->name ?? null,
+            'updated_at' => $quotation->created_at->format('d-m-Y'),
+            'total_price' => $total_price,
+            'pdf' => asset('pdf/quotation/' . $quotation->quo_doc) ?? null, // URL for accessing PDF
+            'line_items' => $quotationData
+        ];
+
+        return response()->json([
+            'message' => 'Success',
+            'quotation' => $response_data
+        ], 200);
     }
 
     public function quotationFixall()
     {
         $userId = auth()->user()->id;
 
-        $quotation = RequestForQoutation::join('purchase_requests', 'request_for_qoutations.purchase_request_id', '=', 'purchase_requests.id')
+        // $quotations = RequestForQoutation::join('purchase_requests', 'request_for_qoutations.purchase_request_id', '=', 'purchase_requests.id')
+        //     ->where('purchase_requests.user_id', $userId)
+        //     ->select('request_for_qoutations.*')
+        //     ->get();
+        $quotations = DB::table('request_for_qoutations')
+            ->join('purchase_requests', 'request_for_qoutations.purchase_request_id', '=', 'purchase_requests.id')
             ->where('purchase_requests.user_id', $userId)
             ->select('request_for_qoutations.*')
             ->distinct()
             ->get();
 
+        $lineItemsData = [];
+
+        foreach ($quotations as $quotation) {
+            $quotationData = [
+                'id' => $quotation->id,
+                'user' => $userId,
+                'code' => $quotation->code,
+                // 'company_name' => $userCompany->name ?? null,
+                'quo_doc' => $quotation->quo_doc,
+                'created_at' => date('d-m-Y', strtotime($quotation->created_at)),
+            ];
+
+            $lineItemsData[] = $quotationData;
+        }
+
         return response()->json([
             'message' => 'Success',
-            'quotation' => $quotation
+            'quotation' => $lineItemsData,
+            'jumlah' => $quotations->count()
         ], 200);
-
-
     }
 }
