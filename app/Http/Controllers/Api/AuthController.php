@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Company;
 use App\Models\UserCompany;
 use App\Models\MasterVendor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\role;
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
@@ -30,7 +30,7 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $role = role::where('name', 'company')->first();
+        $role = Role::where('name', 'company')->first();
 
         //create user
         $user = User::create([
@@ -96,7 +96,7 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $role = role::where('name', 'vendor')->first();
+        $role = Role::where('name', 'vendor')->first();
 
         //create user
         $user = User::create([
@@ -485,7 +485,7 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $role = role::where('name', 'user_approval')->first();
+        $role = Role::where('name', 'user_approval')->first();
 
         //create user
         $user = User::create([

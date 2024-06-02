@@ -6,7 +6,7 @@ use App\Http\Traits\UuidTraits;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class role extends Model
+class Role extends Model
 {
     use HasFactory;
 
@@ -14,10 +14,10 @@ class role extends Model
         'name',
     ];
 
-    public function users() {
+    public function users()
+    {
         return $this->hasMany(User::class);
     }
 
     use UuidTraits;
-
 }
