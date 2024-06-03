@@ -67,4 +67,9 @@ class Product extends Model
     {
         return $this->hasMany(LineItem::class);
     }
+
+    public function quotation()
+    {
+        return $this->hasMany(Quotation::class);
+    }
 }

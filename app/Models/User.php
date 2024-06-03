@@ -101,6 +101,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Order::class);
     }
 
+    public function shipment()
+    {
+        return $this->hasMany(Shipment::class);
+    }
+
     public function getKeyType()
     {
         return 'string';

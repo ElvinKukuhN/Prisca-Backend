@@ -6,23 +6,23 @@ use App\Http\Traits\UuidTraits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MasterVendor extends Model
+class Shipment extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'order_id',
         'user_id',
-        'alamat',
-        'bidang_usaha',
-        'tanggal_berdiri',
-        'npwp',
-        'siup',
-        'website',
-        'bank',
-        'rekening',
+        'no_resi',
+        'bukti',
     ];
 
     use UuidTraits;
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 
     public function user()
     {

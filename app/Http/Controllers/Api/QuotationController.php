@@ -76,6 +76,12 @@ class QuotationController extends Controller
     {
         $quotation = RequestForQoutation::findOrFail($id);
 
+        if (!$quotation) {
+            return response()->json([
+                'message' => 'Quotation Not Found !!!'
+            ], 404);
+        }
+
         // Inisialisasi array untuk menampung data semua line items
         $lineItemsData = [];
 
@@ -86,7 +92,7 @@ class QuotationController extends Controller
                 // Tambahkan data line item ke dalam array jika belum ada
                 $exists = false;
                 foreach ($lineItemsData as $data) {
-                    if ($data['product_name'] === $lineItem->name && $data['quantity'] === $lineItem->quantity && $data['product_price'] === $lineItem->price) {
+                    if ($data['product_id'] === $lineItem->product_id && $data['product_name'] === $lineItem->name && $data['quantity'] === $lineItem->quantity && $data['product_price'] === $lineItem->price) {
                         $exists = true;
                         break;
                     }
@@ -94,6 +100,7 @@ class QuotationController extends Controller
                 if (!$exists) {
                     $product_price = $lineItem->product->commercialInfo->price;
                     $lineItemsData[] = [
+                        'product_id' => $lineItem->product_id,
                         'product_name' => $lineItem->name,
                         'quantity' => $lineItem->quantity,
                         'product_price' => $product_price,
@@ -121,6 +128,7 @@ class QuotationController extends Controller
     public function quotationFromVendor(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
+            'quotationsItems.*.product_id' => 'required',
             'quotationItems.*.name' => 'required',
             'quotationItems.*.quantity' => 'required',
             'quotationItems.*.price' => 'required',
@@ -135,6 +143,7 @@ class QuotationController extends Controller
             foreach ($request->quotationItems as $quotationItem) {
                 $quotationItemModel = new Quotation([
                     'request_for_qoutation_id' => $id,
+                    'product_id' => $quotationItem['product_id'],
                     'name' => $quotationItem['name'],
                     'quantity' => $quotationItem['quantity'],
                     'price' => $quotationItem['price'],
@@ -149,6 +158,7 @@ class QuotationController extends Controller
             foreach ($quotationItems as $quotationItem) {
                 $quotationData[] = [
                     'id' => $quotationItem->id,
+                    'product_id' => $quotationItem->product_id,
                     'name' => $quotationItem->name,
                     'quantity' => $quotationItem->quantity,
                     'price' => $quotationItem->price,
@@ -222,6 +232,7 @@ class QuotationController extends Controller
             $exists = false;
             foreach ($quotationData as $data) {
                 if (
+                    $data['product_id'] === $quotation->product_id &&
                     $data['product_name'] === $quotationItem->name &&
                     $data['quantity'] === $quotationItem->quantity &&
                     $data['product_price'] === $quotationItem->price
@@ -236,6 +247,7 @@ class QuotationController extends Controller
                 $product_price = $quotationItem->price;
                 $quotationData[] = [
                     'id' => $quotationItem->id,
+                    'product_id' => $quotationItem->product_id,
                     'product_name' => $quotationItem->name,
                     'quantity' => $quotationItem->quantity,
                     'product_price' => $product_price,

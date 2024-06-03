@@ -260,7 +260,9 @@ class AuthController extends Controller
             'vendor_bidang_usaha' => 'required',
             'vendor_tanggal_berdiri' => 'required',
             'siup' => 'required',
-            'vendor_website' => 'required'
+            'vendor_website' => 'required',
+            'vendor_bank' => 'required',
+            'vendor_rekening' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -291,7 +293,9 @@ class AuthController extends Controller
             'bidang_usaha' => $request->vendor_bidang_usaha,
             'tanggal_berdiri' => $request->vendor_tanggal_berdiri,
             'siup' => $siup,
-            'website' => $request->vendor_website
+            'website' => $request->vendor_website,
+            'bank' => $request->vendor_bank,
+            'rekening' => $request->vendor_rekening
         ]);
 
         if ($user && $masterVendor) {
@@ -309,7 +313,9 @@ class AuthController extends Controller
                         'bidang_usaha' => $masterVendor->bidang_usaha,
                         'tanggal_berdiri' => $masterVendor->tanggal_berdiri,
                         'siup' => asset('vendor/siup/' . $masterVendor->siup),
-                        'website' => $masterVendor->website
+                        'website' => $masterVendor->website,
+                        'bank' => $masterVendor->bank,
+                        'rekening' => $masterVendor->rekening
                     ],
                     'role'  => [
                         'id'    => $user->role->id,
@@ -329,7 +335,9 @@ class AuthController extends Controller
             'bidang_usaha' => 'required',
             'tanggal_berdiri' => 'required',
             'siup' => 'required|file|mimes:pdf|max:2048',
-            'website' => 'required'
+            'website' => 'required',
+            'bank' => 'required',
+            'rekening' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -353,7 +361,9 @@ class AuthController extends Controller
             'bidang_usaha' => $request->vendor_bidang_usaha,
             'tanggal_berdiri' => $request->vendor_tanggal_berdiri,
             'siup' => $siup,
-            'website' => $request->vendor_website
+            'website' => $request->vendor_website,
+            'bank' => $request->vendor_bank,
+            'rekening' => $request->vendor_rekening
         ]);
 
         if ($masterVendor) {
@@ -372,7 +382,9 @@ class AuthController extends Controller
                             'bidang_usaha' => $masterVendor->bidang_usaha,
                             'tanggal_berdiri' => $masterVendor->tanggal_berdiri,
                             'siup' => asset('vendor/siup/' . $masterVendor->siup),
-                            'website' => $masterVendor->website
+                            'website' => $masterVendor->website,
+                            'bank' => $masterVendor->bank,
+                            'rekening' => $masterVendor->rekening
                         ],
                         'role'  => [
                             'id'    => $user->role->id,

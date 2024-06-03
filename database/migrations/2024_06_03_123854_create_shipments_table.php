@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('quotations', function (Blueprint $table) {
+        Schema::create('shipments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('request_for_qoutation_id');
-            $table->foreignUuid('product_id');
-            $table->string('name');
-            $table->integer('quantity');
-            $table->double('price');
-            $table->double('amount');
-            $table->integer('discount')->nullable();
+            $table->foreignUuid('order_id');
+            $table->foreignUuid('user_id'); //user id milik vendor
+            $table->string('no_resi');
+            $table->string('bukti')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quotations');
+        Schema::dropIfExists('shipments');
     }
 };

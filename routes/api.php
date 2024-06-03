@@ -1,21 +1,24 @@
 <?php
 
-use App\Http\Controllers\Api\ApprovalRequestController;
 use Illuminate\Http\Request;
+use App\Models\ApprovalRequest;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\GroupController;
+use App\Http\Controllers\api\OrderController;
 use App\Http\Controllers\Api\DivisiController;
 use App\Http\Controllers\Api\EtalaseController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CurrencyController;
+use App\Http\Controllers\api\ShipmentController;
+use App\Http\Controllers\Api\QuotationController;
 use App\Http\Controllers\Api\DepartemenController;
 use App\Http\Controllers\Api\PurchaseOrderController;
+use App\Http\Controllers\Api\ApprovalRequestController;
+use App\Http\Controllers\api\PaymentController;
 use App\Http\Controllers\Api\PurchaseRequestController;
-use App\Http\Controllers\Api\QuotationController;
-use App\Models\ApprovalRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,11 +60,25 @@ Route::middleware('auth:api', 'cors', 'checkRole:vendor')->prefix('vendor')->gro
     Route::post('/quotation/{id}', [QuotationController::class, 'quotationFromVendor'])->name('quotationFromVendor');
     Route::get('/quotationFix/{id}', [QuotationController::class, 'quotationFixGet'])->name('quotationFixGet');
     Route::post('/quotation/{id}/pdf', [QuotationController::class, 'quotationFixPDFSendToBuyer'])->name('quotationFixPDFSendToBuyer');
+
+    //Order
+    Route::get('/order', [OrderController::class, 'showVendor'])->name('showOrder');
+    Route::get('/order/{id}', [OrderController::class, 'show'])->name('showOrderById');
+
+    //Shipment
+    Route::post('/shipment', [ShipmentController::class, 'create'])->name('shipmentCreate');
+    Route::get('/shipment', [ShipmentController::class, 'index'])->name('shipmentIndex');
+    Route::get('/shipment/{id}', [ShipmentController::class, 'show'])->name('shipmentShowById');
+
+    // Invoice
+    Route::post('/invoice', [PaymentController::class, 'create'])->name('invoiceCreate');
+    Route::get('/invoice/{id}', [PaymentController::class, 'show'])->name('invoiceById');
+    Route::post('/invoice/{id}/pdf', [PaymentController::class, 'sendInvoice'])->name('invoicepdf');
+    Route::post('/invoice/{id}/success', [PaymentController::class, 'makeSuccess'])->name('makeSuccess');
 });
 
 //Route Untuk Role Buyer
 Route::middleware('auth:api', 'cors', 'checkRole:company')->prefix('buyer')->group(function () {
-
 
     //Profile
     Route::get('/profile', [AuthController::class, 'userGetProfile'])->name('showProfileUser');
@@ -116,6 +133,20 @@ Route::middleware('auth:api', 'cors', 'checkRole:company')->prefix('buyer')->gro
     // Approval Orders
     Route::post('/approvalOrder', [ApprovalRequestController::class, 'approvalOrderCreate'])->name('approvalOrderCreate');
     Route::get('/approvalOrder/{code}', [ApprovalRequestController::class, 'approvalOrderGet'])->name('approvalOrderGet');
+
+    //Order
+    Route::post('/order', [OrderController::class, 'create'])->name('createOrder');
+    Route::get('/order', [OrderController::class, 'index'])->name('showOrder');
+    Route::get('/order/{id}', [OrderController::class, 'show'])->name('showOrderById');
+
+    //Shipment
+    Route::get('/shipment/{id}', [ShipmentController::class, 'showResiBuyer'])->name('shipmentShowById');
+    Route::post('/shipment/{id}', [ShipmentController::class, 'buktiDiterima'])->name('shipmentShowById');
+
+    //Payment
+    Route::get('/payment/{id}', [PaymentController::class, 'show'])->name('paymentShow');
+    Route::post('/payment/{id}', [PaymentController::class, 'buktiSend'])->name('paymentBukti');
+
 });
 
 //Route Untuk User Approval0

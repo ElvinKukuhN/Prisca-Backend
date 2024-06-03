@@ -20,7 +20,6 @@ class cors
         $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With, Application');
         // $response->headers->set('Access-Control-Allow-Credentials', 'true');
 
-
         return $response;
     }
 }

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('npwp')->nullable();
             $table->string('siup')->nullable();
             $table->string('website')->nullable();
+            $table->string('bank')->nullable();
+            $table->integer('rekening')->nullable();
             $table->timestamps();
         });
     }

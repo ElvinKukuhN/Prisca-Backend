@@ -12,6 +12,7 @@ class Quotation extends Model
 
     protected $fillable = [
         'request_for_qoutation_id',
+        'product_id',
         'name',
         'quantity',
         'price',
@@ -24,5 +25,10 @@ class Quotation extends Model
     public function requestForQuotation()
     {
         return $this->belongsTo(RequestForQoutation::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 }
