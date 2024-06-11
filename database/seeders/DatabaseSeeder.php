@@ -5,7 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\ApprovalLevel;
-use App\Models\role;
+use App\Models\Role;
 use App\Models\Group;
 use App\Models\Etalase;
 use App\Models\Category;
