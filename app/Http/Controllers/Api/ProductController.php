@@ -238,8 +238,12 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if ($product) {
-            // Mengurutkan gambar berdasarkan nama file
-            $sortedProductImages = $product->productImage->sortBy('image')->values()->all();
+            // Mengurutkan gambar berdasarkan nomor di dalam nama file
+            $sortedProductImages = $product->productImage->sortBy(function ($image) {
+                // Menggunakan ekspresi reguler untuk mencari nomor di dalam nama file
+                preg_match('/(\d+)/', $image->image, $matches);
+                return (int) $matches[0]; // Mengembalikan nomor yang ditemukan sebagai integer
+            })->values()->all();
 
             $productImagesData = [];
             foreach ($sortedProductImages as $productImage) {
