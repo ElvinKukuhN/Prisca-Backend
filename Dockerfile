@@ -134,6 +134,8 @@ COPY . .
 # Change ownership of our applications
 RUN chmod -R 755 /var/www/public
 
+RUN composer update
+
 # Command to start your application
 CMD ["php", "-S", "0.0.0.0:80", "-t", "public/"]
 
