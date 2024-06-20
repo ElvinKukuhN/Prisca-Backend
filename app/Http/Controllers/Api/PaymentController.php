@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\api;
 
 use Carbon\Carbon;
+use App\Models\Order;
 use App\Models\Payment;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -29,6 +30,11 @@ class PaymentController extends Controller
         ]);
 
         if ($payment) {
+            // Update invoice_created column in orders table
+            $order = Order::find($request->order_id);
+            $order->invoice_created = true;
+            $order->save();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Berhasil menambahkan data',

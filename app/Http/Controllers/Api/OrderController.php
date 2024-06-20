@@ -105,7 +105,7 @@ class OrderController extends Controller
             ->join('users', 'orders.user_id', '=', 'users.id')
             ->join('user_companies as comp', 'users.id', '=', 'comp.user_id')
             ->join('companies', 'comp.company_code', '=', 'companies.code')
-            ->select('orders.id as id', 'orders.code as code', 'orders.status as status', 'companies.name as company_name', 'orders.created_at as waktu_order')
+            ->select('orders.id as id', 'orders.code as code', 'orders.status as status', 'companies.name as company_name', 'orders.created_at as waktu_order', 'orders.invoice_created')
             ->where('rfq.user_id', $userId)
             ->get();
 

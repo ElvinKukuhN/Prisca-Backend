@@ -15,6 +15,7 @@ class Order extends Model
         'user_id',
         'code',
         'status',
+        'invoice_created',
     ];
 
     use UuidTraits;

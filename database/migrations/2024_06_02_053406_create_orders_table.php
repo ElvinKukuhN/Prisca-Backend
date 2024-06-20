@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignUuid('user_id');
             $table->string('code');
             $table->enum('status', ['dikemas', 'dikirim', 'selesai']);
+            $table->boolean('invoice_created')->default(false);
             $table->timestamps();
         });
     }
