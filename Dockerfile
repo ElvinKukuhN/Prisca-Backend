@@ -115,7 +115,6 @@ COPY . .
 
 # Change ownership of our applications
 RUN chmod -R 755 /var/www/public
-# RUN chmod -R 644 /var/www/public
 RUN chown -R www-data:www-data /var/www/public
 
 # Konfigurasi Apache dan virtual host
