@@ -100,8 +100,9 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nano \
-    libonig-dev \
-    && apt-get clean
+    libonig-dev
+
+RUN apt-get clean
 
 # Set lokalisasi dan timezone
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
