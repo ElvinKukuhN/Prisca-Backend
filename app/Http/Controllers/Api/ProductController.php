@@ -550,9 +550,10 @@ class ProductController extends Controller
 
         $productData = [];
         foreach ($products as $product) {
+            // Mengurutkan gambar berdasarkan nama file
+            $sortedProductImages = $product->productImage->sortBy('image')->values()->all();
             $productImagesData = [];
-            foreach ($product->productImage as $productImage) {
-                // $base64_image = base64_encode(file_get_contents(public_path('images/' . $productImage->image)));
+            foreach ($sortedProductImages as $productImage) {
                 $productImagesData[] = [
                     'id' => $productImage->id,
                     'image' => $productImage->image,
