@@ -85,12 +85,18 @@
 # # Start Apache
 # CMD ["apache2-foreground"]
 
-# Gunakan PHP-FPM sebagai base image
-FROM php:8.2-fpm
+# Gunakan Nginx sebagai base image
+FROM nginx:latest
 
-# Instal Nginx dan beberapa dependensi lainnya
-RUN apt-get update && apt-get install -y nginx \
-    build-essential \
+# Hapus Apache dan PHP dependencies yang tidak dibutuhkan
+RUN apt-get purge apache2 apache2-utils
+RUN rm -rf /var/lib/apt/lists/*
+
+# Install dependencies yang dibutuhkan oleh Laravel dan Nginx
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    unzip \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
@@ -98,46 +104,49 @@ RUN apt-get update && apt-get install -y nginx \
     zip \
     jpegoptim optipng pngquant gifsicle \
     vim \
-    unzip \
-    git \
-    curl \
     nano \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    openssl
+    openssl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set lokalisasi dan timezone
+# Set lokalisasi
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-    locale-gen && \
-    ln -snf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && \
-    echo Asia/Jakarta > /etc/timezone
+    locale-gen
+
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && echo Asia/Jakarta > /etc/timezone
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install PDO MySQL extension dan modul PHP lainnya
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
-
 # Set working directory
 WORKDIR /var/www
 
-# Copy composer files dan install dependencies
+# Copy composer files
 COPY composer.json composer.lock ./
+
+# Install dependencies
 RUN composer install --no-scripts --no-autoloader
 
-# Copy aplikasi Anda
+# Copy the rest of the application
 COPY . .
 
-# Konfigurasi Nginx
-COPY nginx-config.conf /etc/nginx/sites-available/default
-RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
-
 # Change ownership of our applications
-RUN chown -R www-data:www-data /var/www
+RUN chmod -R 755 /var/www/public
 
-# Expose port 80 untuk Nginx
+# Konfigurasi Nginx
+COPY nginx-config.conf /etc/nginx/conf.d/default.conf
+
+# Generate self-signed SSL certificate
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/server.prisca-backend.3mewj5.easypanel.host.key -out /etc/ssl/certs/server.prisca-backend.3mewj5.easypanel.host.crt \
+    -subj "/C=ID/ST=Jakarta/L=Jakarta/O=Contoh Company/OU=IT Department/CN=server.prisca-prisca-backend.3mewj5.easypanel.host/emailAddress=kukuhelvin20@gmail.com"
+
+# Expose ports 80 and 443
 EXPOSE 80
+EXPOSE 443
 
-# Perintah yang akan dijalankan saat container dimulai
-CMD service nginx start && php-fpm
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
