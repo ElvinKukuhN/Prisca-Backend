@@ -1,7 +1,8 @@
-# # Gunakan PHP sebagai base image
-# FROM php:8.2-fpm
 
-# # Install dependensi yang dibutuhkan oleh Laravel
+# # Gunakan PHP sebagai base image dengan modul Apache
+# FROM php:8.2-apache
+
+# # Install dependensi yang dibutuhkan oleh Laravel dan Apache
 # RUN apt-get update && apt-get install -y \
 #     build-essential \
 #     libpng-dev \
@@ -14,9 +15,14 @@
 #     unzip \
 #     git \
 #     curl \
+#     systemctl\
+#     nano\
 #     libonig-dev \
 #     libxml2-dev \
-#     libzip-dev
+#     libzip-dev \
+#     apache2 \
+#     openssl \
+#     && a2enmod rewrite ssl
 
 # # Set lokalisasi
 # RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
@@ -34,6 +40,11 @@
 # # Install PDO MySQL extension
 # RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
+# # Enable Apache modules
+# RUN a2enmod rewrite ssl
+
+# RUN mkdir public
+
 # # Set working directory
 # WORKDIR /var/www
 
@@ -46,20 +57,42 @@
 # # Copy the rest of the application
 # COPY . .
 
-
 # # Change ownership of our applications
-# RUN chown -R www-data:www-data /var/www
+# RUN chmod -R 755 /var/www/public
+# RUN chown -R www-data:www-data /var/www/public
 
-# # Expose port 9000 and start php-fpm server
-# EXPOSE 9000
-# CMD ["php-fpm"]
+# # Konfigurasi Apache dan virtual host
+# COPY apache-config.conf /etc/apache2/sites-available/prisca-backend.3mewj5.easypanel.host.conf
+# RUN a2ensite prisca-backend.3mewj5.easypanel.host.conf
+# RUN a2dissite 000-default.conf
 
+# # Generate self-signed SSL certificate
+# RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/server.prisca-backend.3mewj5.easypanel.host.key -out /etc/ssl/certs/server.prisca-backend.3mewj5.easypanel.host.crt \
+#     -subj "/C=ID/ST=Jakarta/L=Jakarta/O=Contoh Company/OU=IT Department/CN=server.prisca-prisca-backend.3mewj5.easypanel.host/emailAddress=kukuhelvin20@gmail.com"
 
-# Gunakan PHP sebagai base image dengan modul Apache
-FROM php:8.2-apache
+# COPY apache-config-ssl.conf /etc/apache2/sites-available/prisca-backend.3mewj5.easypanel.host-ssl.conf
+# RUN a2ensite prisca-backend.3mewj5.easypanel.host-ssl.conf
 
-# Install dependensi yang dibutuhkan oleh Laravel dan Apache
-RUN apt-get update && apt-get install -y \
+# RUN composer update
+
+# RUN chmod -R 775 /var/www/storage
+# RUN chown -R www-data:www-data /var/www/storage
+
+# # Expose ports 80 and 443
+# EXPOSE 80
+# EXPOSE 443
+
+# # Start Apache
+# CMD ["apache2-foreground"]
+
+# Gunakan PHP-FPM sebagai base image dengan Nginx
+FROM php:8.2-fpm
+
+# Instal Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Install dependensi lainnya yang diperlukan
+RUN apt-get install -y \
     build-essential \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -71,21 +104,17 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    systemctl\
-    nano\
+    nano \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    apache2 \
-    openssl \
-    && a2enmod rewrite ssl
+    openssl
 
-# Set lokalisasi
+# Set lokalisasi dan timezone (tidak ada perubahan dari yang telah Anda lakukan)
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-    locale-gen
-
-# Set timezone
-RUN ln -snf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && echo Asia/Jakarta > /etc/timezone
+    locale-gen && \
+    ln -snf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && \
+    echo Asia/Jakarta > /etc/timezone
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -93,50 +122,29 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PDO MySQL extension
+# Install PDO MySQL extension dan modul PHP lainnya
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
-
-# Enable Apache modules
-RUN a2enmod rewrite ssl
-
-RUN mkdir public
 
 # Set working directory
 WORKDIR /var/www
 
-# Copy composer files
+# Copy composer files dan install dependencies
 COPY composer.json composer.lock ./
-
-# Install dependencies
 RUN composer install --no-scripts --no-autoloader
 
-# Copy the rest of the application
+# Copy aplikasi Anda
 COPY . .
 
-# Change ownership of our applications
-RUN chmod -R 755 /var/www/public
-RUN chown -R www-data:www-data /var/www/public
+# Konfigurasi Nginx
+COPY nginx-config.conf /etc/nginx/sites-available/prisca-backend.conf
+RUN ln -s /etc/nginx/sites-available/prisca-backend.conf /etc/nginx/sites-enabled/
 
-# Konfigurasi Apache dan virtual host
-COPY apache-config.conf /etc/apache2/sites-available/prisca-backend.3mewj5.easypanel.host.conf
-RUN a2ensite prisca-backend.3mewj5.easypanel.host.conf
-RUN a2dissite 000-default.conf
+# Change ownership of our applications (sesuaikan dengan pengaturan Nginx)
+RUN chmod -R 755 /var/www
+RUN chown -R www-data:www-data /var/www
 
-# Generate self-signed SSL certificate
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/server.prisca-backend.3mewj5.easypanel.host.key -out /etc/ssl/certs/server.prisca-backend.3mewj5.easypanel.host.crt \
-    -subj "/C=ID/ST=Jakarta/L=Jakarta/O=Contoh Company/OU=IT Department/CN=server.prisca-prisca-backend.3mewj5.easypanel.host/emailAddress=kukuhelvin20@gmail.com"
-
-COPY apache-config-ssl.conf /etc/apache2/sites-available/prisca-backend.3mewj5.easypanel.host-ssl.conf
-RUN a2ensite prisca-backend.3mewj5.easypanel.host-ssl.conf
-
-RUN composer update
-
-RUN chmod -R 775 /var/www/storage
-RUN chown -R www-data:www-data /var/www/storage
-
-# Expose ports 80 and 443
+# Expose port 80 untuk Nginx
 EXPOSE 80
-EXPOSE 443
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Start PHP-FPM dan Nginx
+CMD ["nginx", "-g", "daemon off;"]
