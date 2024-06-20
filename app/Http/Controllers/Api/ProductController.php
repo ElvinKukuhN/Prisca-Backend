@@ -59,7 +59,7 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $counter = 1;
             foreach ($request->file('image') as $image) {
-                $imageName = $request->name . '-' . $counter . '.' . $image->getClientOriginalExtension();
+                $imageName = $counter  . '-' .$request->name . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('images'), $imageName);
                 $images[] = $imageName;
                 $counter++;
