@@ -85,12 +85,11 @@
 # # Start Apache
 # CMD ["apache2-foreground"]
 
-# Gunakan PHP 8.1 sebagai base image
-FROM php:8.2
+# Gunakan Nginx sebagai base image
+FROM nginx:latest
 
-# Install Nginx dan beberapa dependensi lainnya
+# Install dependencies yang dibutuhkan oleh PHP dan Nginx
 RUN apt-get update && apt-get install -y \
-    nginx \
     curl \
     git \
     unzip \
@@ -134,9 +133,8 @@ COPY . .
 # Change ownership of our applications
 RUN chmod -R 755 /var/www/public
 
-# Konfigurasi Nginx untuk menangani PHP dengan FastCGI
-COPY nginx-config.conf /etc/nginx/sites-available/default
-RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+# Konfigurasi Nginx
+COPY nginx-config.conf /etc/nginx/conf.d/default.conf
 
 # Generate self-signed SSL certificate
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/prisca-backend.3mewj5.easypanel.host.key -out /etc/ssl/certs/prisca-backend.3mewj5.easypanel.host.crt \
@@ -146,8 +144,7 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private
 EXPOSE 80
 EXPOSE 443
 
-# Start Nginx untuk menangani permintaan langsung ke PHP dengan FastCGI
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
-
 
 
