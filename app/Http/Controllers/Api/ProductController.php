@@ -59,7 +59,7 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $counter = 1;
             foreach ($request->file('image') as $image) {
-                $imageName = $counter  . '-' . $request->name . '.' . $image->getClientOriginalExtension();
+                $imageName = $counter  . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('images'), $imageName);
                 $images[] = $imageName;
                 $counter++;
@@ -238,21 +238,15 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if ($product) {
-            // Mengurutkan gambar berdasarkan nomor di dalam nama file
-            $sortedProductImages = $product->productImage->sortBy(function ($image) {
-                // Menggunakan ekspresi reguler untuk mencari nomor di dalam nama file
-                preg_match('/(\d+)/', $image->image, $matches);
-                return (int) $matches[0]; // Mengembalikan nomor yang ditemukan sebagai integer
-            })->values()->all();
+            // Mengurutkan gambar berdasarkan nama file
+            $sortedProductImages = $product->productImage->sortBy('image')->values()->all();
 
             $productImagesData = [];
             foreach ($sortedProductImages as $productImage) {
-                // Encode nama file atau path sebelum membangun URL
-                $encodedImageName = urlencode($productImage->image);
                 $productImagesData[] = [
                     'id' => $productImage->id,
                     'image' => $productImage->image,
-                    'url_image' => url('images/' . $encodedImageName),
+                    'url_image' => url('images/' . $productImage->image),
                 ];
             }
 
