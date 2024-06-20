@@ -85,14 +85,11 @@
 # # Start Apache
 # CMD ["apache2-foreground"]
 
-# Gunakan PHP-FPM sebagai base image dengan Nginx
+# Gunakan PHP-FPM sebagai base image
 FROM php:8.2-fpm
 
-# Instal Nginx
-RUN apt-get update && apt-get install -y nginx
-
-# Install dependensi lainnya yang diperlukan
-RUN apt-get install -y \
+# Instal Nginx dan beberapa dependensi lainnya
+RUN apt-get update && apt-get install -y nginx \
     build-essential \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -110,7 +107,7 @@ RUN apt-get install -y \
     libzip-dev \
     openssl
 
-# Set lokalisasi dan timezone (tidak ada perubahan dari yang telah Anda lakukan)
+# Set lokalisasi dan timezone
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen && \
     ln -snf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && \
@@ -118,9 +115,6 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PDO MySQL extension dan modul PHP lainnya
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
@@ -136,15 +130,14 @@ RUN composer install --no-scripts --no-autoloader
 COPY . .
 
 # Konfigurasi Nginx
-COPY nginx-config.conf /etc/nginx/sites-available/prisca-backend.conf
-RUN ln -s /etc/nginx/sites-available/prisca-backend.conf /etc/nginx/sites-enabled/
+COPY nginx-config.conf /etc/nginx/sites-available/default
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 
-# Change ownership of our applications (sesuaikan dengan pengaturan Nginx)
-RUN chmod -R 755 /var/www
+# Change ownership of our applications
 RUN chown -R www-data:www-data /var/www
 
 # Expose port 80 untuk Nginx
 EXPOSE 80
 
 # Start PHP-FPM dan Nginx
-CMD ["nginx", "-g", "daemon off;"]
+CMD service nginx start && php-fpm
