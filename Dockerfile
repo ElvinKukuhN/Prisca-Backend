@@ -85,11 +85,12 @@
 # # Start Apache
 # CMD ["apache2-foreground"]
 
-# Gunakan Nginx sebagai base image
-FROM nginx:latest
+# Gunakan PHP sebagai base image
+FROM php:8.2-fpm
 
-# Install dependencies yang dibutuhkan oleh Laravel dan Nginx
+# Install Nginx dan beberapa dependensi lainnya
 RUN apt-get update && apt-get install -y \
+    nginx \
     curl \
     git \
     unzip \
@@ -137,8 +138,8 @@ RUN chmod -R 755 /var/www/public
 COPY nginx-config.conf /etc/nginx/conf.d/default.conf
 
 # Generate self-signed SSL certificate
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/server.prisca-backend.3mewj5.easypanel.host.key -out /etc/ssl/certs/server.prisca-backend.3mewj5.easypanel.host.crt \
-    -subj "/C=ID/ST=Jakarta/L=Jakarta/O=Contoh Company/OU=IT Department/CN=server.prisca-prisca-backend.3mewj5.easypanel.host/emailAddress=kukuhelvin20@gmail.com"
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/prisca-backend.3mewj5.easypanel.host.key -out /etc/ssl/certs/prisca-backend.3mewj5.easypanel.host.crt \
+    -subj "/C=ID/ST=Jakarta/L=Jakarta/O=Contoh Company/OU=IT Department/CN=prisca-prisca-backend.3mewj5.easypanel.host/emailAddress=kukuhelvin20@gmail.com"
 
 # Expose ports 80 and 443
 EXPOSE 80
@@ -146,4 +147,5 @@ EXPOSE 443
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
 
