@@ -88,10 +88,6 @@
 # Gunakan Nginx sebagai base image
 FROM nginx:latest
 
-# Hapus Apache dan PHP dependencies yang tidak dibutuhkan
-RUN apt-get purge apache2 apache2-utils
-RUN rm -rf /var/lib/apt/lists/*
-
 # Install dependencies yang dibutuhkan oleh Laravel dan Nginx
 RUN apt-get update && apt-get install -y \
     curl \
@@ -150,3 +146,4 @@ EXPOSE 443
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
