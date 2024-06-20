@@ -100,6 +100,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nano \
+    libonig-dev \  # Tambahkan ini untuk memenuhi dependensi oniguruma
     && apt-get clean
 
 # Set lokalisasi dan timezone
@@ -134,4 +135,4 @@ EXPOSE 80
 RUN mkdir -p /var/run/php
 
 # Start PHP-FPM dan Nginx
-CMD service php8.2-fpm start && nginx -g 'daemon off;' 
+CMD service php8.2-fpm start && nginx -g 'daemon off;'
