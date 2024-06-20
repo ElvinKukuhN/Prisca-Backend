@@ -240,9 +240,9 @@ class ProductController extends Controller
             foreach ($product->productImage as $productImage) {
                 // $base64_image = base64_encode(file_get_contents(public_path('images/' . $productImage->image)));
                 $productImagesData[] = [
-                    // 'id' => $productImage->id,
-                    // 'image' => $productImage->image,
-                    'base64_image' => url('images/' . $productImage),
+                    'id' => $productImage->id,
+                    'image' => $productImage->image,
+                    'url_image' => url('images/' . $productImage->image),
                 ];
             }
 
