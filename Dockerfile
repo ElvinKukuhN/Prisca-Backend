@@ -85,27 +85,32 @@
 # # Start Apache
 # CMD ["apache2-foreground"]
 
-# Gunakan PHP-FPM sebagai base image
+# Gunakan PHP-FPM sebagai base image dengan Nginx
 FROM php:8.2-fpm
 
-# Instal Nginx dan dependensi yang dibutuhkan
-RUN apt-get update && apt-get install -y \
-    nginx \
-    curl \
-    git \
+# Instal Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Install dependensi lainnya yang diperlukan
+RUN apt-get install -y \
+    build-essential \
     libpng-dev \
-    libjpeg-dev \
+    libjpeg62-turbo-dev \
     libfreetype6-dev \
     locales \
     zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
     unzip \
+    git \
+    curl \
     nano \
     libonig-dev \
-    libzip-dev 
+    libxml2-dev \
+    libzip-dev \
+    openssl
 
-RUN apt-get clean
-
-# Set lokalisasi dan timezone
+# Set lokalisasi dan timezone (tidak ada perubahan dari yang telah Anda lakukan)
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen && \
     ln -snf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && \
@@ -114,7 +119,10 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install extensions PHP yang diperlukan
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install PDO MySQL extension dan modul PHP lainnya
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Set working directory
@@ -127,14 +135,16 @@ RUN composer install --no-scripts --no-autoloader
 # Copy aplikasi Anda
 COPY . .
 
-# Ganti kepemilikan file aplikasi
+# Konfigurasi Nginx
+COPY nginx-config.conf /etc/nginx/sites-available/prisca-backend.conf
+RUN ln -s /etc/nginx/sites-available/prisca-backend.conf /etc/nginx/sites-enabled/
+
+# Change ownership of our applications (sesuaikan dengan pengaturan Nginx)
+RUN chmod -R 755 /var/www
 RUN chown -R www-data:www-data /var/www
 
 # Expose port 80 untuk Nginx
 EXPOSE 80
 
-# Buat direktori untuk socket PHP-FPM
-RUN mkdir -p /var/run/php
-
 # Start PHP-FPM dan Nginx
-CMD service php8.2-fpm start && nginx -g 'daemon off;'
+CMD ["nginx", "-g", "daemon off;"]
