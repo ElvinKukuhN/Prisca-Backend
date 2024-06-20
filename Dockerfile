@@ -134,4 +134,4 @@ EXPOSE 80
 RUN mkdir -p /var/run/php
 
 # Start PHP-FPM dan Nginx
-CMD service php8.2-fpm start && nginx -g 'daemon off;'
+CMD service php8.2-fpm start && nginx -g 'daemon off;' 
