@@ -247,10 +247,12 @@ class ProductController extends Controller
 
             $productImagesData = [];
             foreach ($sortedProductImages as $productImage) {
+                // Encode nama file atau path sebelum membangun URL
+                $encodedImageName = urlencode($productImage->image);
                 $productImagesData[] = [
                     'id' => $productImage->id,
                     'image' => $productImage->image,
-                    'url_image' => url('images/' . $productImage->image),
+                    'url_image' => url('images/' . $encodedImageName),
                 ];
             }
 
