@@ -100,7 +100,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nano \
-    libonig-dev \  # Tambahkan ini untuk memenuhi dependensi oniguruma
+    libonig-dev \
     && apt-get clean
 
 # Set lokalisasi dan timezone
