@@ -100,7 +100,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nano \
-    libonig-dev
+    libonig-dev \
+    libzip-dev 
 
 RUN apt-get clean
 
