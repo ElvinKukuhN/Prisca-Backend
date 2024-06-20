@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('alamat')->nullable();
             $table->string('bidang_usaha')->nullable();
             $table->date('tanggal_berdiri')->nullable();
-            $table->integer('npwp')->nullable();
+            $table->string('npwp')->nullable();
             $table->string('siup')->nullable();
             $table->string('website')->nullable();
             $table->string('bank')->nullable();

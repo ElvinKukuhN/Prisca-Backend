@@ -57,10 +57,12 @@ class ProductController extends Controller
         // Mengelola file gambar yang diunggah
         $images = [];
         if ($request->hasFile('image')) {
+            $counter = 1;
             foreach ($request->file('image') as $image) {
-                $imageName = time() . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $imageName = time() . '-' . $counter . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('images'), $imageName);
                 $images[] = $imageName;
+                $counter++;
             }
         } else {
             return response()->json([

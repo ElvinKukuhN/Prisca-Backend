@@ -256,7 +256,7 @@ class AuthController extends Controller
             'email'     => 'required|email',
             'telp'      => 'required',
             'vendor_alamat'    => 'required',
-            'vendor_npwp'          => 'required',
+            'vendor_npwp'          => 'required|max:16|regex:/^\d+$/',
             'vendor_bidang_usaha' => 'required',
             'vendor_tanggal_berdiri' => 'required',
             'siup' => 'required',
