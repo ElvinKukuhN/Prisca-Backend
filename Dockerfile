@@ -86,7 +86,7 @@
 # CMD ["apache2-foreground"]
 
 # Gunakan PHP 8.1 sebagai base image
-FROM php:8.1
+FROM php:8.2
 
 # Install Nginx dan beberapa dependensi lainnya
 RUN apt-get update && apt-get install -y \
