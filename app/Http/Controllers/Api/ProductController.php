@@ -144,7 +144,7 @@ class ProductController extends Controller
             foreach ($images as $image) {
                 $productImage = Product_Image::create([
                     'product_id' => $product->id,
-                    'image' => url('images/' . $images),
+                    'image' => $image
                 ]);
             }
             if ($productImage) {
