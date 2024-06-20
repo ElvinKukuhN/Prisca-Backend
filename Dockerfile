@@ -139,5 +139,5 @@ RUN chown -R www-data:www-data /var/www
 # Expose port 80 untuk Nginx
 EXPOSE 80
 
-# Start PHP-FPM dan Nginx
+# Perintah yang akan dijalankan saat container dimulai
 CMD service nginx start && php-fpm
