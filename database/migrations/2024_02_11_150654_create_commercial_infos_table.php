@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('currency_id');
             $table->foreignUuid('etalase_id');
             $table->foreignUuid('product_id');
-            $table->integer('price');
+            $table->double('price');
             $table->string('payment_terms');
             $table->integer('discount')->default(0);
             $table->date('price_exp');

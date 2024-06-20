@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignUuid('product_id')->nullable();
             $table->string('name');
             $table->integer('quantity');
-            $table->float('price');
+            $table->double('price');
             $table->timestamps();
         });
     }
