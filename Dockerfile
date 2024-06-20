@@ -85,7 +85,7 @@
 # # Start Apache
 # CMD ["apache2-foreground"]
 
-# Gunakan PHP sebagai base image
+# Gunakan PHP 8.1 sebagai base image
 FROM php:8.1-fpm
 
 # Install Nginx dan beberapa dependensi lainnya
