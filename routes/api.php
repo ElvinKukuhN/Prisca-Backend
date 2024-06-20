@@ -49,7 +49,7 @@ Route::middleware('auth:api', 'cors', 'checkRole:vendor')->prefix('vendor')->gro
 
     //Profile
     Route::get('/profile', [AuthController::class, 'vendorGetProfile'])->name('showProfileVendor');
-    Route::post('/profile', [AuthController::class, 'vendorUpdateProfile'])->name('updateProfileVendor');
+    Route::put('/profile', [AuthController::class, 'vendorUpdateProfile'])->name('updateProfileVendor');
 
     //Master
     Route::post('/master', [AuthController::class, 'vendorMasterCreate'])->name('master');

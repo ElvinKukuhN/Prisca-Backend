@@ -59,7 +59,7 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $counter = 1;
             foreach ($request->file('image') as $image) {
-                $imageName = time() . '-' . $counter . '.' . $image->getClientOriginalExtension();
+                $imageName = uniqid() . '-' . $counter . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('images'), $imageName);
                 $images[] = $imageName;
                 $counter++;
@@ -144,7 +144,7 @@ class ProductController extends Controller
             foreach ($images as $image) {
                 $productImage = Product_Image::create([
                     'product_id' => $product->id,
-                    'image' => $image,
+                    'image' => url('images/' . $images),
                 ]);
             }
             if ($productImage) {
@@ -204,11 +204,11 @@ class ProductController extends Controller
         foreach ($products as $product) {
             $productImagesData = [];
             foreach ($product->productImage as $productImage) {
-                $base64_image = base64_encode(file_get_contents(public_path('images/' . $productImage->image)));
+                // $base64_image = base64_encode(file_get_contents(public_path('images/' . $productImage->image)));
                 $productImagesData[] = [
                     'id' => $productImage->id,
                     'image' => $productImage->image,
-                    'base64_image' => $base64_image,
+                    'url_image' => url('images/' . $productImage->image),
                 ];
             }
 
@@ -238,11 +238,11 @@ class ProductController extends Controller
         if ($product) {
             $productImagesData = [];
             foreach ($product->productImage as $productImage) {
-                $base64_image = base64_encode(file_get_contents(public_path('images/' . $productImage->image)));
+                // $base64_image = base64_encode(file_get_contents(public_path('images/' . $productImage->image)));
                 $productImagesData[] = [
                     // 'id' => $productImage->id,
                     // 'image' => $productImage->image,
-                    'base64_image' => $base64_image,
+                    'base64_image' => url('images/' . $productImage),
                 ];
             }
 
@@ -414,22 +414,22 @@ class ProductController extends Controller
             $other->save();
 
             if ($request->hasFile('image')) {
-
-                $images = [];
-                foreach ($request->file('image') as $image) {
-                    $imageName = time() . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('images'), $imageName);
-                    $images[] = $imageName;
-                }
+                $oldImages = Product_Image::where('product_id', $product->id)->get();
 
                 // Menghapus gambar lama
-                $oldImages = Product_Image::where('product_id', $product->id)->get();
                 foreach ($oldImages as $oldImage) {
                     $imagePath = public_path('images') . '/' . $oldImage->image;
                     if (file_exists($imagePath)) {
                         unlink($imagePath);
                     }
                     $oldImage->delete();
+                }
+
+                $images = [];
+                foreach ($request->file('image') as $image) {
+                    $imageName = $oldImages;
+                    $image->move(public_path('images'), $imageName);
+                    $images[] = $imageName;
                 }
 
                 // Menambahkan gambar baru
@@ -548,11 +548,11 @@ class ProductController extends Controller
         foreach ($products as $product) {
             $productImagesData = [];
             foreach ($product->productImage as $productImage) {
-                $base64_image = base64_encode(file_get_contents(public_path('images/' . $productImage->image)));
+                // $base64_image = base64_encode(file_get_contents(public_path('images/' . $productImage->image)));
                 $productImagesData[] = [
                     'id' => $productImage->id,
                     'image' => $productImage->image,
-                    'base64_image' => $base64_image,
+                    'url_image' => url('images/' . $productImage->image),
                 ];
             }
 
