@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\QuotationController;
 use App\Http\Controllers\Api\DepartemenController;
 use App\Http\Controllers\Api\PurchaseOrderController;
 use App\Http\Controllers\Api\ApprovalRequestController;
+use App\Http\Controllers\Api\Order_Controller;
 use App\Http\Controllers\api\PaymentController;
 use App\Http\Controllers\Api\PurchaseRequestController;
 
@@ -135,9 +136,9 @@ Route::middleware('auth:api', 'cors', 'checkRole:company')->prefix('buyer')->gro
     Route::get('/approvalOrder/{code}', [ApprovalRequestController::class, 'approvalOrderGet'])->name('approvalOrderGet');
 
     //Order
-    Route::post('/order', [OrderController::class, 'create'])->name('createOrder');
-    Route::get('/order', [OrderController::class, 'index'])->name('showOrder');
-    Route::get('/order/{id}', [OrderController::class, 'show'])->name('showOrderById');
+    Route::post('/order', [Order_Controller::class, 'create'])->name('createOrder');
+    Route::get('/order', [Order_Controller::class, 'index'])->name('showOrder');
+    Route::get('/order/{id}', [Order_Controller::class, 'show'])->name('showOrderById');
 
     //Shipment
     Route::get('/shipment/{id}', [ShipmentController::class, 'showResiBuyer'])->name('shipmentShowById');
