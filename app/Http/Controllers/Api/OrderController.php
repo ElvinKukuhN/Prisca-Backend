@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
-    /**
+    //
+        /**
      * Create a new order.
      *
      * @param Request $request The HTTP request object.
