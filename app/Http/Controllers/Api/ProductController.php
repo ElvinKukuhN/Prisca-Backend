@@ -172,7 +172,7 @@ class ProductController extends Controller
                             'feature' => $specificationProduct->feature,
                             'partNumber' => $specificationProduct->partNumber,
                             'satuan' => $specificationProduct->satuan,
-                            'video' => asset('videos/' . $specificationProduct->video),
+                            'video' => url('videos/' . $specificationProduct->video),
                             'condition' => $specificationProduct->condition,
                         ],
                         'commercial_info' => [
@@ -267,7 +267,7 @@ class ProductController extends Controller
                         'feature' => $product->specificationDetail->feature,
                         'partNumber' => $product->specificationDetail->partNumber,
                         'satuan' => $product->specificationDetail->satuan,
-                        'video' => asset('videos/' . $product->specificationDetail->video),
+                        'video' => url('videos/' . $product->specificationDetail->video),
                         'condition' => $product->specificationDetail->condition,
                     ],
                     'commercial_info' => [
@@ -461,7 +461,7 @@ class ProductController extends Controller
                         'feature' => $specificationProduct->feature,
                         'partNumber' => $specificationProduct->partNumber,
                         'satuan' => $specificationProduct->satuan,
-                        'video' => asset('videos/' . $specificationProduct->video),
+                        'video' => url('videos/' . $specificationProduct->video),
                         'condition' => $specificationProduct->condition,
                     ],
                     'commercial_info' => [
@@ -575,7 +575,7 @@ class ProductController extends Controller
                     'feature' => $product->specificationDetail->feature,
                     'partNumber' => $product->specificationDetail->partNumber,
                     'satuan' => $product->specificationDetail->satuan,
-                    'video' => asset('videos/' . $product->specificationDetail->video),
+                    'video' => url('videos/' . $product->specificationDetail->video),
                     'condition' => $product->specificationDetail->condition,
                 ],
                 'commercial_info' => [
