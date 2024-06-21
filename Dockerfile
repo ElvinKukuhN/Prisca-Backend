@@ -136,8 +136,12 @@ COPY . .
 
 # Change ownership of our applications
 RUN chmod -R 755 /var/www/public
+RUN chown -R www-data:www-data /var/www/public
 
 RUN composer update
+
+RUN chmod -R 775 /var/www/storage
+RUN chown -R www-data:www-data /var/www/storage
 
 # Command to start your application
 CMD ["php", "-S", "0.0.0.0:80", "-t", "public/"]
