@@ -18,8 +18,10 @@ use App\Http\Controllers\Api\DepartemenController;
 use App\Http\Controllers\Api\PurchaseOrderController;
 use App\Http\Controllers\Api\ApprovalRequestController;
 use App\Http\Controllers\Api\Order_Controller;
+use App\Http\Controllers\Api\Payment__Controller;
 use App\Http\Controllers\api\PaymentController;
 use App\Http\Controllers\Api\PurchaseRequestController;
+use App\Http\Controllers\Api\Shipment_Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,19 +65,19 @@ Route::middleware('auth:api', 'cors', 'checkRole:vendor')->prefix('vendor')->gro
     Route::post('/quotation/{id}/pdf', [QuotationController::class, 'quotationFixPDFSendToBuyer'])->name('quotationFixPDFSendToBuyer');
 
     //Order
-    Route::get('/order', [OrderController::class, 'showVendor'])->name('showOrder');
-    Route::get('/order/{id}', [OrderController::class, 'show'])->name('showOrderById');
+    Route::get('/order', [Order_Controller::class, 'showVendor'])->name('showOrder');
+    Route::get('/order/{id}', [Order_Controller::class, 'show'])->name('showOrderById');
 
     //Shipment
-    Route::post('/shipment', [ShipmentController::class, 'create'])->name('shipmentCreate');
-    Route::get('/shipment', [ShipmentController::class, 'index'])->name('shipmentIndex');
-    Route::get('/shipment/{id}', [ShipmentController::class, 'show'])->name('shipmentShowById');
+    Route::post('/shipment', [Shipment_Controller::class, 'create'])->name('shipmentCreate');
+    Route::get('/shipment', [Shipment_Controller::class, 'index'])->name('shipmentIndex');
+    Route::get('/shipment/{id}', [Shipment_Controller::class, 'show'])->name('shipmentShowById');
 
     // Invoice
-    Route::post('/invoice', [PaymentController::class, 'create'])->name('invoiceCreate');
-    Route::get('/invoice/{id}', [PaymentController::class, 'show'])->name('invoiceById');
-    Route::post('/invoice/{id}/pdf', [PaymentController::class, 'sendInvoice'])->name('invoicepdf');
-    Route::post('/invoice/{id}/success', [PaymentController::class, 'makeSuccess'])->name('makeSuccess');
+    Route::post('/invoice', [Payment__Controller::class, 'create'])->name('invoiceCreate');
+    Route::get('/invoice/{id}', [Payment__Controller::class, 'show'])->name('invoiceById');
+    Route::post('/invoice/{id}/pdf', [Payment__Controller::class, 'sendInvoice'])->name('invoicepdf');
+    Route::post('/invoice/{id}/success', [Payment__Controller::class, 'makeSuccess'])->name('makeSuccess');
 });
 
 //Route Untuk Role Buyer
@@ -141,12 +143,12 @@ Route::middleware('auth:api', 'cors', 'checkRole:company')->prefix('buyer')->gro
     Route::get('/order/{id}', [Order_Controller::class, 'show'])->name('showOrderById');
 
     //Shipment
-    Route::get('/shipment/{id}', [ShipmentController::class, 'showResiBuyer'])->name('shipmentShowById');
-    Route::post('/shipment/{id}', [ShipmentController::class, 'buktiDiterima'])->name('shipmentShowById');
+    Route::get('/shipment/{id}', [Shipment_Controller::class, 'showResiBuyer'])->name('shipmentShowById');
+    Route::post('/shipment/{id}', [Shipment_Controller::class, 'buktiDiterima'])->name('shipmentShowById');
 
     //Payment
-    Route::get('/payment/{id}', [PaymentController::class, 'show'])->name('paymentShow');
-    Route::post('/payment/{id}', [PaymentController::class, 'buktiSend'])->name('paymentBukti');
+    Route::get('/payment/{id}', [Payment__Controller::class, 'show'])->name('paymentShow');
+    Route::post('/payment/{id}', [Payment__Controller::class, 'buktiSend'])->name('paymentBukti');
 
 });
 
