@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Order;
 use App\Models\Shipment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 use Illuminate\Support\Facades\Validator;
 
-class ShipmentController extends Controller
+class Shipment_Controller extends Controller
 {
     //
-
     public function index()
     {
         //
@@ -94,7 +93,6 @@ class ShipmentController extends Controller
             ], 404);
         }
     }
-
 
     public function showResiBuyer($id)
     {

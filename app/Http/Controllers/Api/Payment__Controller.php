@@ -11,8 +11,9 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-class PaymentController extends Controller
+class Payment__Controller extends Controller
 {
+    //
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
