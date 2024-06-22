@@ -9,6 +9,7 @@ use App\Models\UserCompany;
 use App\Models\MasterVendor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
@@ -17,6 +18,8 @@ class AuthController extends Controller
 
     public function userRegister(Request $request)
     {
+
+
         $validator = Validator::make($request->all(), [
             'name'      => 'required',
             'email'     => 'required|email|unique:users',
@@ -161,23 +164,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        //if auth success
         $user = auth()->guard('api')->user();
-        if ($user->role->name == "company") {
-            return response()->json([
-                'success' => true,
-                'user'    => [
-                    'id'         => $user->id,
-                    'name'       => $user->name,
-                    'email'      => $user->email,
-                    'role'       => [
-                        'id'   => $user->role->id,
-                        'name' => $user->role->name
-                    ]
-                ],
-                'token'   => $token
-            ], 200);
-        }
         return response()->json([
             'success' => true,
             'user'    => [
@@ -219,12 +206,22 @@ class AuthController extends Controller
 
     public function logout()
     {
-        $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
-        if ($removeToken) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Logout berhasil'
-            ], 200);
+        try {
+            $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
+            if ($removeToken) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Logout berhasil'
+                ], 200);
+            }
+        } catch (\Throwable $e) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ],
+                500
+            );
         }
     }
 

@@ -11,7 +11,8 @@ class DepartemenController extends Controller
 
     public function departemenIndex()
     {
-        $departemen = Departemen::all();
+        $divisiCode = request()->divisi_code;
+        $departemen = Departemen::where('divisi_code', $divisiCode)->get();
 
         return response()->json([
             'message' => 'Success',

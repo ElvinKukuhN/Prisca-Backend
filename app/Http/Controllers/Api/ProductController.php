@@ -431,7 +431,7 @@ class ProductController extends Controller
 
                 $images = [];
                 foreach ($request->file('image') as $image) {
-                    $imageName = $oldImages;
+                    $imageName = $oldImages->image;
                     $image->move(public_path('images'), $imageName);
                     $images[] = $imageName;
                 }
@@ -612,6 +612,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
+            'jumlah_product' =>count($productData),
             'products' => $productData
         ], 200);
     }
