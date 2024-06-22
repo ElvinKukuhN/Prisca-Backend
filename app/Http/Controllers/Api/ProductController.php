@@ -90,6 +90,7 @@ class ProductController extends Controller
         } else {
             $video = null; // Jika tidak ada file yang diunggah, set $video menjadi null
         }
+        
 
 
         $specificationProduct = SpecificationDetail::create([
