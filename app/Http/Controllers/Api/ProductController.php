@@ -83,12 +83,15 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('video')) {
-            $videoName = time() . '-' . uniqid() . '.' . $request->video->getClientOriginalExtension();
-            $request->video->move(public_path('videos'), $videoName);
-            $video = $videoName;
+            $videofile = $request->file('video'); // Ambil file yang diunggah
+            $videoName = time() . '-' . uniqid() . '.' . $videofile->getClientOriginalExtension(); // Dapatkan ekstensi file asli
+            $videofile->move(public_path('videos'), $videoName); // Pindahkan file ke direktori yang ditentukan
+            $video = $videoName; // Simpan nama file dalam variabel $video
         } else {
-            $video = null;
+            $video = null; // Jika tidak ada file yang diunggah, set $video menjadi null
         }
+
+
         $specificationProduct = SpecificationDetail::create([
             'product_id' => $product->id,
             'productSpecification' => $request->productSpecification,
