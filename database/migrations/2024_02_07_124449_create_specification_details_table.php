@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('product_id');
             $table->text('productSpecification');
             $table->text('technicalSpecification');
-            $table->string('feature');
+            $table->text('feature');
             $table->string('partNumber');
             $table->string('satuan');
             $table->string('video')->nullable();
