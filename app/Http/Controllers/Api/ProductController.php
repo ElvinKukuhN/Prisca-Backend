@@ -334,7 +334,6 @@ class ProductController extends Controller
                 'feature' => 'required',
                 'partNumber' => 'required',
                 'satuan' => 'required',
-                // 'video' => 'required',
                 'condition' => 'required',
                 'etalase_id' => 'required',
                 'currency_id' => 'required',
@@ -433,7 +432,7 @@ class ProductController extends Controller
 
                 $images = [];
                 foreach ($request->file('image') as $image) {
-                    $imageName = $oldImages->image;
+                    $imageName = time() . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
                     $image->move(public_path('images'), $imageName);
                     $images[] = $imageName;
                 }
@@ -494,7 +493,7 @@ class ProductController extends Controller
                         'sku' => $product->other->sku,
                         'tags' => $product->other->tags,
                     ],
-                    'image' => $product->productImage,
+                    'images' => $product->productImage,
                     'author' => [
                         'id' => $product->user->id,
                         'name' => $product->user->name,

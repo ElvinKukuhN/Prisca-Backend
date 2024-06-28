@@ -71,6 +71,12 @@ class PurchaseRequestController extends Controller
     {
         $purchaseRequests = PurchaseRequest::where('user_id', auth()->user()->id)->with('lineItems')->get();
 
+        if ($purchaseRequests->isEmpty()) {
+            return response()->json([
+                'message' => 'No purchase requests found'
+            ], 404);
+        }
+
         return response()->json([
             'purchaseRequests' => $purchaseRequests
         ], 200);
@@ -79,6 +85,11 @@ class PurchaseRequestController extends Controller
     public function getPurchaseRequestById($id)
     {
         $purchaseRequest = PurchaseRequest::where('id', $id)->first();
+        if (!$purchaseRequest) {
+            return response()->json([
+                'message' => 'Purchase Request not found'
+            ], 400);
+        }
 
         $lineItems = $purchaseRequest->lineItems;
 
@@ -126,9 +137,14 @@ class PurchaseRequestController extends Controller
         try {
             $lineItem = LineItem::findOrFail($id);
 
-            $lineItem->quantity = $request->input('quantity');
-            $lineItem->save();
+            $quantity = $request->input('quantity');
+            if (!is_numeric($quantity) || $quantity <= 0) {
+                return response()->json([
+                    'message' => 'Invalid quantity'
+                ], 422);
+            }
 
+            $lineItem->quantity = $quantity;
             $product = $lineItem->product;
             $commercialInfo = $product->commercialInfo;
 
@@ -154,5 +170,4 @@ class PurchaseRequestController extends Controller
             ], 500);
         }
     }
-
 }

@@ -255,19 +255,18 @@ class ApprovalRequestController extends Controller
                             $purchaseRequest = PurchaseRequest::where('code', $code)->first();
                             if ($purchaseRequest) {
                                 $purchaseRequest->status = 'approved';
-                                $purchaseRequest->updated_at = now(); // Update last_activity
+                                $purchaseRequest->updated_at = now();
                                 $purchaseRequest->save();
                             }
                         }
 
-                        // Persiapan pesan respons
                         $message = 'Approval request ' . $status . ' successfully';
                         if (!empty($changedByUsers)) {
                             $message .= ' by the following users:';
                             foreach ($changedByUsers as $user) {
                                 $message .= ' User ' . $user['name'] . ' (' . $user['status'] . '),';
                             }
-                            $message = rtrim($message, ','); // Menghapus koma terakhir
+                            $message = rtrim($message, ',');
                         }
 
                         return response()->json([

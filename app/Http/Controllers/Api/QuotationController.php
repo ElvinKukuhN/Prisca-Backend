@@ -282,10 +282,6 @@ class QuotationController extends Controller
     {
         $userId = auth()->user()->id;
 
-        // $quotations = RequestForQoutation::join('purchase_requests', 'request_for_qoutations.purchase_request_id', '=', 'purchase_requests.id')
-        //     ->where('purchase_requests.user_id', $userId)
-        //     ->select('request_for_qoutations.*')
-        //     ->get();
         $quotations = DB::table('request_for_qoutations')
             ->join('purchase_requests', 'request_for_qoutations.purchase_request_id', '=', 'purchase_requests.id')
             ->where('purchase_requests.user_id', $userId)

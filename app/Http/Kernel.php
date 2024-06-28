@@ -71,6 +71,6 @@ class Kernel extends HttpKernel
         // 'cors' => \Illuminate\Http\Middleware\HandleCors::class
         'cors' => \App\Http\Middleware\cors::class,
         'checkUserRole' => \App\Http\Middleware\CheckUserRole::class,
-        'checkRole' => \App\Http\Middleware\CheckRole::class
+        'checkRole' => \App\Http\Middleware\CheckRole::class,
     ];
 }

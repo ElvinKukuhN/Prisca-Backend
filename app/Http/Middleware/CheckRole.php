@@ -3,9 +3,16 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
+
+use function PHPUnit\Framework\isEmpty;
 
 class CheckRole
 {
@@ -26,8 +33,14 @@ class CheckRole
     // }
     public function handle(Request $request, Closure $next, ...$roles)
     {
+
+        $aut = request()->bearerToken();
+        if (empty($aut)) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         // Memeriksa apakah pengguna memiliki token yang valid
-        if (!Auth::guard('api')->check()) {
+        if (!Auth::guard('api')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
@@ -36,6 +49,7 @@ class CheckRole
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+
 
         $userRole = $user->role->name; // Anda perlu memastikan bahwa 'role' adalah relasi yang ada pada model User
 

@@ -191,7 +191,7 @@ class Payment__Controller extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Berhasil menambahkan data',
-                'pay$payment' => $payment,
+                'payment' => $payment,
                 'image_url' => $imageUrl
             ], 200);
         } else {

@@ -227,8 +227,11 @@ class AuthController extends Controller
 
     public function vendorGetProfile()
     {
+
         $user = auth()->user();
         $masterVendor = MasterVendor::where('user_id', $user->id)->first();
+
+        // Lanjutkan dengan logika Anda di sini jika token bearer ada dan tidak kosong
 
         return response()->json([
             'success' => true,

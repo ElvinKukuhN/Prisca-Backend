@@ -41,7 +41,7 @@ Route::post('/vendorRegister', [AuthController::class, 'vendorRegister'])->name(
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware('auth:api', 'cors')->group(function () {
+Route::middleware('auth:api', 'cors',)->group(function () {
     Route::middleware('checkRole:vendor')->prefix('vendor')->group(function () {
         //Product
         Route::post('/product', [ProductController::class, 'store'])->name('addProduct');
@@ -116,7 +116,7 @@ Route::middleware('auth:api', 'cors')->group(function () {
         // Route::get('/show/purchaseRequest', [PurchaseRequestController::class, 'getPurchaseRequest'])->name('showPurchaseRequest');
         Route::get('/purchaseRequest', [PurchaseRequestController::class, 'getPurchaseRequestByUserId'])->name('showPurchaseRequestByUserId');
         Route::get('/purchaseRequest/{id}', [PurchaseRequestController::class, 'getPurchaseRequestById'])->name('showPurchaseRequestById');
-        Route::post('/updateLineItem/{id}', [PurchaseRequestController::class, 'updateLineItem'])->name('updateLineItem');
+        Route::put('/updateLineItem/{id}', [PurchaseRequestController::class, 'updateLineItem'])->name('updateLineItem');
 
         //user Approval
         Route::post('/userApproval', [AuthController::class, 'userApprovalAdd'])->name('userApproval.store');
@@ -148,7 +148,7 @@ Route::middleware('auth:api', 'cors')->group(function () {
 
         //Shipment
         Route::get('/shipment/{id}', [Shipment_Controller::class, 'showResiBuyer'])->name('shipmentShowById');
-        Route::post('/shipment/{id}', [Shipment_Controller::class, 'buktiDiterima'])->name('shipmentShowById');
+        Route::post('/shipment/{id}', [Shipment_Controller::class, 'buktiDiterima'])->name('buktiDiterima');
 
         //Payment
         Route::get('/payment/{id}', [Payment__Controller::class, 'show'])->name('paymentShow');
