@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\QuotationController;
 use App\Http\Controllers\Api\DepartemenController;
 use App\Http\Controllers\Api\PurchaseOrderController;
 use App\Http\Controllers\Api\ApprovalRequestController;
+use App\Http\Controllers\Api\NegotiationController;
 use App\Http\Controllers\Api\Order_Controller;
 use App\Http\Controllers\Api\Payment__Controller;
 use App\Http\Controllers\api\PaymentController;
@@ -71,6 +72,10 @@ Route::middleware('auth:api', 'cors',)->group(function () {
         Route::get('/quotationFix/{id}', [QuotationController::class, 'quotationFixGet'])->name('quotationFixGet');
         Route::post('/quotation/{id}/pdf', [QuotationController::class, 'quotationFixPDFSendToBuyer'])->name('quotationFixPDFSendToBuyer');
 
+        //Negotiaton
+        Route::post('/negotiation', [NegotiationController::class, 'create'])->name('negotiation');
+        Route::get('/negotiation/{id}', [NegotiationController::class, 'showByRFQ'])->name('ShowNegotiation');
+
         //Order
         Route::get('/order', [Order_Controller::class, 'showVendor'])->name('showOrder');
         Route::get('/order/{id}', [Order_Controller::class, 'show'])->name('showOrderById');
@@ -86,6 +91,7 @@ Route::middleware('auth:api', 'cors',)->group(function () {
         Route::post('/invoice/{id}/pdf', [Payment__Controller::class, 'sendInvoice'])->name('invoicepdf');
         Route::post('/invoice/{id}/success', [Payment__Controller::class, 'makeSuccess'])->name('makeSuccess');
     });
+
     Route::middleware('checkRole:company')->prefix('buyer')->group(function () {
         //Profile
         Route::get('/profile', [AuthController::class, 'userGetProfile'])->name('showProfileUser');
@@ -131,6 +137,10 @@ Route::middleware('auth:api', 'cors',)->group(function () {
         Route::post('/requestForQuotation', [QuotationController::class, 'quotationRequest'])->name('quotationRequest');
         Route::get('/quotationFix/{id}', [QuotationController::class, 'quotationFixGet'])->name('quotationFixGet');
         Route::get('/quotationFix', [QuotationController::class, 'quotationFixall'])->name('quotationFixall');
+
+        //Negotiaton
+        Route::post('/negotiation', [NegotiationController::class, 'create'])->name('negotiation');
+        Route::get('/negotiation/{id}', [NegotiationController::class, 'showByRFQ'])->name('ShowNegotiation');
 
         // Purchase Order
         Route::post('/purchaseOrder', [PurchaseOrderController::class, 'purchaseOrderCreate'])->name('purchaseOrderCreate');

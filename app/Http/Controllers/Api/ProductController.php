@@ -52,6 +52,7 @@ class ProductController extends Controller
             'maintenance' => 'required',
             'sku' => 'required',
             'tags' => 'required',
+            'berat' => 'required'
         ]);
 
         // Mengelola file gambar yang diunggah
@@ -113,6 +114,7 @@ class ProductController extends Controller
             'stock' => $request->stock,
             'pre_order' => $request->pre_order,
             'contract' => $request->contract,
+            'berat' => $request->berat
         ]);
 
         $purchaseQTY = PurchaseQTY::create([

@@ -106,6 +106,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Shipment::class);
     }
 
+    public function negotiation() {
+        return $this->hasMany(Negotiation::class);
+    }
+
     public function getKeyType()
     {
         return 'string';

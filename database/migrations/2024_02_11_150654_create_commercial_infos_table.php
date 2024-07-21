@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignUuid('etalase_id');
             $table->foreignUuid('product_id');
             $table->double('price');
+            $table->string('satuan');
+            $table->double('berat');
             $table->string('payment_terms');
             $table->integer('discount')->default(0);
             $table->date('price_exp');

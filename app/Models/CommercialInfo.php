@@ -15,6 +15,8 @@ class CommercialInfo extends Model
         'etalase_id',
         'product_id',
         'price',
+        'satuan',
+        'berat',
         'payment_terms',
         'discount',
         'price_exp',

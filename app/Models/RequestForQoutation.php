@@ -38,4 +38,8 @@ class RequestForQoutation extends Model
     {
         return $this->hasMany(PurchaseOrder::class);
     }
+
+    public function negotiation () {
+        return $this->hasMany(Negotiation::class);
+    }
 }
