@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\QuotationController;
 use App\Http\Controllers\Api\DepartemenController;
 use App\Http\Controllers\Api\PurchaseOrderController;
 use App\Http\Controllers\Api\ApprovalRequestController;
+use App\Http\Controllers\Api\CompanyAddressController;
 use App\Http\Controllers\Api\NegotiationController;
 use App\Http\Controllers\Api\Order_Controller;
 use App\Http\Controllers\Api\Payment__Controller;
@@ -96,6 +97,12 @@ Route::middleware('auth:api', 'cors',)->group(function () {
         //Profile
         Route::get('/profile', [AuthController::class, 'userGetProfile'])->name('showProfileUser');
         Route::post('/profile', [AuthController::class, 'userUpdateProfile'])->name('updateProfileUser');
+
+        //Addresses
+        Route::get('/address', [CompanyAddressController::class, 'index'])->name('showAddress');
+        Route::post('/address', [CompanyAddressController::class, 'store'])->name('createAddress');
+        Route::put('/address/{id}', [CompanyAddressController::class, 'update'])->name('updateAddress');
+        Route::delete('/address/{id}', [CompanyAddressController::class, 'destroy'])->name('deleteAddress');
 
         //Divisi
         Route::get('/divisi', [DivisiController::class, 'divisiIndex'])->name('showDivisi');

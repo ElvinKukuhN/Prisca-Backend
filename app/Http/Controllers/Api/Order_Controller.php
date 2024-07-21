@@ -8,6 +8,7 @@ use App\Models\PurchaseOrder;
 use App\Models\CommercialInfo;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\RequestForQoutation;
 use Illuminate\Support\Facades\Validator;
 
 class Order_Controller extends Controller
@@ -122,6 +123,11 @@ class Order_Controller extends Controller
     {
         $order = Order::find($id);
 
+        $rfqId = $order->purchaseOrder->request_for_qoutations_id;
+        $rfq = RequestForQoutation::find($rfqId);
+        $companyAddress = $rfq->company_address;
+
+
         $lineItems = DB::table('orders')
             ->join('purchase_orders as po', 'po.id', '=', 'orders.purchase_order_id')
             ->join('request_for_qoutations as rfq', 'rfq.id', '=', 'po.request_for_qoutations_id')
@@ -134,7 +140,7 @@ class Order_Controller extends Controller
         $buyer = DB::table('orders')
             ->join('users', 'orders.user_id', '=', 'users.id')
             ->join('user_companies as comp', 'users.id', '=', 'comp.user_id')
-            ->select('users.id as id', 'users.name as name', 'users.telp as telp', 'comp.address as alamat')
+            ->select('users.id as id', 'users.name as name', 'users.telp as telp')
             ->where('orders.id', $id)
             ->first();
 
@@ -147,12 +153,19 @@ class Order_Controller extends Controller
             ->where('orders.id', $id)
             ->first();
 
+            $buyerMap = [
+                'id' => $buyer->id,
+                'name' => $buyer->name,
+                'telp' => $buyer->telp,
+                'alamat' => $companyAddress
+            ];
+
         $data = [
             'success' => true,
             'orders' => [
                 'id' => $order->id,
                 'purchase_order_id' => $order->purchase_order_id,
-                'user' => $buyer,
+                'user' => $buyerMap,
                 'vendor' => $vendor,
                 'so_code' => $order->code,
                 'po_code' => $order->purchaseOrder->code,

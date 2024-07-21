@@ -9,6 +9,7 @@ use App\Models\UserCompany;
 use App\Models\MasterVendor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\CompanyAddress;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
@@ -454,8 +455,15 @@ class AuthController extends Controller
             'address' => $request->address
         ]);
 
+        $companyAddress = CompanyAddress::create([
+            'user_companies_id' => $userCompany->id,
+            'address' => $request->address
+        ]);
+
 
         if ($user && $userCompany) {
+            $companyAddress;
+
             return response()->json([
                 'success' => true,
                 'message' => 'Profile berhasil diupdate',

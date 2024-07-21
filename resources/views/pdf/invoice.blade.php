@@ -88,7 +88,7 @@
                 </tr>
                 <tr>
                     <th>Address</th>
-                    <td>{{ $buyer->alamat }}</td>
+                    <td>{{ $companyAddress }}</td>
                 </tr>
             </table>
         </div>

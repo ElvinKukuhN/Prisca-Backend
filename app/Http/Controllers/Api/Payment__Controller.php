@@ -8,6 +8,7 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use App\Models\RequestForQoutation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -50,6 +51,11 @@ class Payment__Controller extends Controller
 
         $batas_bayar = Carbon::parse($payment->created_at)->addDays(14);
 
+        $order = Order::find($payment->order_id);
+        $rfqId = $order->purchaseOrder->request_for_qoutations_id;
+        $rfq = RequestForQoutation::find($rfqId);
+        $companyAddress = $rfq->company_address;
+
         $lineItems = DB::table('orders')
             ->join('purchase_orders as po', 'po.id', '=', 'orders.purchase_order_id')
             ->join('request_for_qoutations as rfq', 'rfq.id', '=', 'po.request_for_qoutations_id')
@@ -62,7 +68,7 @@ class Payment__Controller extends Controller
         $buyer = DB::table('orders')
             ->join('users', 'orders.user_id', '=', 'users.id')
             ->join('user_companies as comp', 'users.id', '=', 'comp.user_id')
-            ->select('users.id as id', 'users.name as name', 'users.telp as telp', 'comp.address as alamat')
+            ->select('users.id as id', 'users.name as name', 'users.telp as telp')
             ->where('orders.id', $id)
             ->first();
 
@@ -78,6 +84,13 @@ class Payment__Controller extends Controller
         $total_bayar = $lineItems->sum('amount');
 
         $pdfName = url('pdf/invoice/' . $payment->invoice_pdf) ?? null;
+
+        $buyerMap = [
+            'id' => $buyer->id,
+            'name' => $buyer->name,
+            'telp' => $buyer->telp,
+            'alamat' => $companyAddress
+        ];
 
         if ($payment) {
             return response()->json([
@@ -99,7 +112,7 @@ class Payment__Controller extends Controller
                         'so_code' => $payment->order->code,
                         'po_code' => $payment->order->purchaseOrder->code
                     ],
-                    'buyer' => $buyer,
+                    'buyer' => $buyerMap,
                     'vendor' => $vendor,
                     'line_items' => $lineItems,
                 ]
@@ -112,6 +125,12 @@ class Payment__Controller extends Controller
         $payment = Payment::where('order_id', $id)->first();
 
         $batas_bayar = Carbon::parse($payment->created_at)->addDays(14);
+
+        $order = Order::find($payment->order_id);
+        $rfqId = $order->purchaseOrder->request_for_qoutations_id;
+        $rfq = RequestForQoutation::find($rfqId);
+        $companyAddress = $rfq->company_address;
+
 
         $lineItems = DB::table('orders')
             ->join('purchase_orders as po', 'po.id', '=', 'orders.purchase_order_id')
@@ -142,7 +161,7 @@ class Payment__Controller extends Controller
 
 
         // Load view PDF dengan data quotation
-        $pdf = PDF::loadView('pdf.invoice', compact('payment', 'batas_bayar', 'lineItems', 'buyer', 'vendor', 'total_bayar'));
+        $pdf = PDF::loadView('pdf.invoice', compact('payment', 'batas_bayar', 'lineItems', 'buyer', 'vendor', 'total_bayar', 'companyAddress'));
 
         // Simpan PDF ke dalam direktori lokal
         $pdfPath = public_path('pdf/invoice'); // Direktori untuk menyimpan PDF

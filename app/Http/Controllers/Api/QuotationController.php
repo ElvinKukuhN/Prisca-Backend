@@ -29,6 +29,7 @@ class QuotationController extends Controller
             'purchase_request_id' => $request->purchase_request_id,
             'user_id' => $vendor_id,
             'code' => "QUO-" . date("Ymd") . rand(100, 999),
+            'company_address' => $request->company_address
 
         ]);
 
@@ -189,7 +190,7 @@ class QuotationController extends Controller
 
         $quotationItem = $quotation->quotations;
 
-        $company_address = $quotation->purchaseRequest->user->userCompanies->first()->address ?? null;
+        $company_address = $quotation->company_address ?? null;
         $company_name = $quotation->purchaseRequest->user->userCompanies->first()->company->name ?? null;
 
         $vendor_address = auth()->user()->masterVendor->alamat ?? null;

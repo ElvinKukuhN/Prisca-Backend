@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('request_for_qoutations', function (Blueprint $table) {
+        Schema::create('company_addresses', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('purchase_request_id');
-            $table->foreignUuid('user_id');
-            $table->string('code');
-            $table->string('quo_doc')->nullable();
-            $table->text('company_address')->nullable();
+            $table->foreignUuid('user_companies_id');
+            $table->text('address');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('request_for_qoutations');
+        Schema::dropIfExists('company_addresses');
     }
 };

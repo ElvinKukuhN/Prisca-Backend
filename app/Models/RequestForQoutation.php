@@ -13,7 +13,8 @@ class RequestForQoutation extends Model
     protected $fillable = [
         'purchase_request_id',
         'user_id',
-        'code'
+        'code',
+        'company_address'
     ];
 
     use UuidTraits;

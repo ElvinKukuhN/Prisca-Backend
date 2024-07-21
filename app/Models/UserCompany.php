@@ -39,4 +39,8 @@ class UserCompany extends Model
     {
         return $this->belongsTo(Departemen::class, 'departemen_code', 'code');
     }
+
+    public function companyAddress() {
+        return $this->hasMany(CompanyAddress::class);
+    }
 }

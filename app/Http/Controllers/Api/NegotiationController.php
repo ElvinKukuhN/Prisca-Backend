@@ -43,43 +43,6 @@ class NegotiationController extends Controller
         }
     }
 
-    public function showByRFQ2($id)
-    {
-
-        try {
-            $negotiation = Negotiation::where('request_for_qoutation_id', $id)->get();
-
-            if (!$negotiation) {
-                return response()->json(['error' => 'Not found'], 404);
-            }
-
-            $negotiationMap = [
-                'request_for_quotation_id' => $negotiation->request_for_quotation_id,
-                'negotiation' => [
-                    'id' => $negotiation->id,
-                    'description' => $negotiation->description,
-                    'created_at' => $negotiation->created_at,
-                    'user' => [
-                        'id' => $negotiation->user->id,
-                        'name' => $negotiation->user->name,
-                        'role' => $negotiation->user->role->name
-                    ],
-                ]
-            ];
-
-            if ($negotiation) {
-                return response()->json([
-                    'message' => 'Negotiation created successfully',
-                    'negotiation' => $negotiationMap
-                ], 200);
-            }
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Negotiation failed to get with error', $th->getMessage()
-            ], 400);
-        }
-    }
-
     public function showByRFQ($id)
     {
 
