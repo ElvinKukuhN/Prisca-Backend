@@ -30,7 +30,6 @@ class QuotationController extends Controller
             'user_id' => $vendor_id,
             'code' => "QUO-" . date("Ymd") . rand(100, 999),
             'company_address' => $request->company_address
-
         ]);
 
         if ($quotation) {
