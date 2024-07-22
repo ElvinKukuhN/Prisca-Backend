@@ -2,6 +2,10 @@
 /node_modules
 /public/build
 /public/hot
+/public/images
+/public/videos
+/public/vendor
+/public/pdf
 /public/storage
 /storage/*.key
 /vendor

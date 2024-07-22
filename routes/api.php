@@ -8,22 +8,23 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\api\OrderController;
 use App\Http\Controllers\Api\DivisiController;
+use App\Http\Controllers\Api\Order_Controller;
 use App\Http\Controllers\Api\EtalaseController;
+use App\Http\Controllers\api\PaymentController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\api\ShipmentController;
-use App\Http\Controllers\Api\QuotationController;
-use App\Http\Controllers\Api\DepartemenController;
-use App\Http\Controllers\Api\PurchaseOrderController;
-use App\Http\Controllers\Api\ApprovalRequestController;
-use App\Http\Controllers\Api\CompanyAddressController;
-use App\Http\Controllers\Api\NegotiationController;
-use App\Http\Controllers\Api\Order_Controller;
 use App\Http\Controllers\Api\Payment__Controller;
-use App\Http\Controllers\api\PaymentController;
-use App\Http\Controllers\Api\PurchaseRequestController;
+use App\Http\Controllers\Api\QuotationController;
 use App\Http\Controllers\Api\Shipment_Controller;
+use App\Http\Controllers\Api\DepartemenController;
+use App\Http\Controllers\Api\NegotiationController;
+use App\Http\Controllers\Api\PengembalianController;
+use App\Http\Controllers\Api\PurchaseOrderController;
+use App\Http\Controllers\Api\CompanyAddressController;
+use App\Http\Controllers\Api\ApprovalRequestController;
+use App\Http\Controllers\Api\PurchaseRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,6 +86,11 @@ Route::middleware('auth:api', 'cors',)->group(function () {
         Route::post('/shipment', [Shipment_Controller::class, 'create'])->name('shipmentCreate');
         Route::get('/shipment', [Shipment_Controller::class, 'index'])->name('shipmentIndex');
         Route::get('/shipment/{id}', [Shipment_Controller::class, 'show'])->name('shipmentShowById');
+
+        //Pengembalian
+        Route::get('/pengembalian/{id}', [PengembalianController::class, 'getPengembalianByOrderId'])->name('getPengembalianByOrderId');
+        Route::post('/pengembalian/{id}', [PengembalianController::class, 'updateStatusByOrderId'])->name('updateStatusByOrderId');
+        Route::post('/pengembalian', [PengembalianController::class, 'replaceReturnedItems'])->name('replaceReturnedItems');
 
         // Invoice
         Route::post('/invoice', [Payment__Controller::class, 'create'])->name('invoiceCreate');
@@ -166,6 +172,10 @@ Route::middleware('auth:api', 'cors',)->group(function () {
         //Shipment
         Route::get('/shipment/{id}', [Shipment_Controller::class, 'showResiBuyer'])->name('shipmentShowById');
         Route::post('/shipment/{id}', [Shipment_Controller::class, 'buktiDiterima'])->name('buktiDiterima');
+
+        //Pengembalian
+        Route::post('/pengembalian', [PengembalianController::class, 'ajuanPengembalian'])->name('ajuanPengembalian');
+        Route::get('/pengembalian/{id}', [PengembalianController::class, 'getPengembalianByOrderId'])->name('getPengembalianByOrderId');
 
         //Payment
         Route::get('/payment/{id}', [Payment__Controller::class, 'show'])->name('paymentShow');

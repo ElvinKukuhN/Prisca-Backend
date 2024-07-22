@@ -72,4 +72,8 @@ class Product extends Model
     {
         return $this->hasMany(Quotation::class);
     }
+
+    public function pengembalian() {
+        return $this->hasMany(Pengembalian::class);
+    }
 }
