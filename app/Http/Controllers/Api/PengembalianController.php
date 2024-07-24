@@ -62,6 +62,20 @@ class PengembalianController extends Controller
                 ], 404);
             }
 
+            $pengembalians = $pengembalians->map(function ($pengembalian) {
+                return [
+                    'id' => $pengembalian->id,
+                    'order_id' => $pengembalian->order_id,
+                    'product_id' => $pengembalian->product_id,
+                    'product_name' => $pengembalian->product->name,
+                    'quantity' => $pengembalian->quantity,
+                    'reason' => $pengembalian->reason,
+                    'status' => $pengembalian->status,
+                    'created_at' => $pengembalian->created_at,
+                    'updated_at' => $pengembalian->updated_at
+                ];
+            });
+
             return response()->json([
                 'message' => 'Returns retrieved successfully',
                 'pengembalians' => $pengembalians
@@ -166,6 +180,7 @@ class PengembalianController extends Controller
                 $dataMap = [
                     'pengembalian_id' => $pengembalian->id,
                     'product_id' => $pengembalian->product_id,
+                    'product_name' => $pengembalian->product->name,
                     'quantity' => $pengembalian->quantity,
                     'reason' => $pengembalian->reason,
                     'status' => $pengembalian->status
