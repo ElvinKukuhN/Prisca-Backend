@@ -110,6 +110,12 @@ class QuotationController extends Controller
             }
         }
 
+        $beratTotal = $quotation->purchaseRequest->lineItems->sum(function ($lineItem) {
+            return $lineItem->quantity * $lineItem->product->commercialInfo->berat;
+        });
+
+
+        $hargaOngkir = $beratTotal * 10000;
         return response()->json([
             'message' => 'Success',
             'quotation' => [
@@ -120,6 +126,7 @@ class QuotationController extends Controller
                 'total_price' => $quotation->purchaseRequest->lineItems->sum(function ($lineItem) {
                     return $lineItem->quantity * $lineItem->product->commercialInfo->price;
                 }),
+                'harga_ongkir' => $hargaOngkir,
                 'line_items' => $lineItemsData
             ]
         ], 200);
@@ -127,7 +134,12 @@ class QuotationController extends Controller
 
     public function quotationFromVendor(Request $request, $id)
     {
+
+        $quotation = RequestForQoutation::findOrFail($id);
+
+
         $validator = Validator::make($request->all(), [
+            'harga_ongkir' => 'required',
             'quotationsItems.*.product_id' => 'required',
             'quotationItems.*.name' => 'required',
             'quotationItems.*.quantity' => 'required',
@@ -166,6 +178,8 @@ class QuotationController extends Controller
                 ];
             }
 
+            $quotation->harga_ongkir = $request->harga_ongkir;
+            $quotation->save();
 
             return response()->json([
                 'message' => 'create quotation successfully',
@@ -268,6 +282,7 @@ class QuotationController extends Controller
             'company_name' => $quotation->purchaseRequest->user->userCompanies->first()->company->name ?? null,
             'updated_at' => $quotation->created_at->format('d-m-Y'),
             'total_price' => $total_price,
+            'harga_ongkir' => $quotation->harga_ongkir,
             'pdf' => asset('pdf/quotation/' . $quotation->quo_doc) ?? null, // URL for accessing PDF
             'line_items' => $quotationData
         ];

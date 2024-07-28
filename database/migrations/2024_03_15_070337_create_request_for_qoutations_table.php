@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignUuid('user_id');
             $table->string('code');
             $table->string('quo_doc')->nullable();
+            $table->double('harga_ongkir')->nullable();
             $table->text('company_address')->nullable();
             $table->timestamps();
         });

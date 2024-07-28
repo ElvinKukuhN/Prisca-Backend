@@ -14,6 +14,7 @@ class RequestForQoutation extends Model
         'purchase_request_id',
         'user_id',
         'code',
+        'harga_ongkir',
         'company_address'
     ];
 
