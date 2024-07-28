@@ -149,7 +149,7 @@ class Order_Controller extends Controller
             ->join('request_for_qoutations as rfq', 'rfq.id', '=', 'po.request_for_qoutations_id')
             ->join('users', 'rfq.user_id', '=', 'users.id')
             ->join('master_vendors as mv', 'users.id', '=', 'mv.user_id')
-            ->select('users.id as id', 'users.name as name', 'users.telp as telp', 'mv.alamat as alamat')
+            ->select('users.id as id', 'users.name as name', 'users.telp as telp', 'mv.alamat as alamat','rfq.harga_ongkir as harga_ongkir')
             ->where('orders.id', $id)
             ->first();
 
@@ -170,6 +170,7 @@ class Order_Controller extends Controller
                 'so_code' => $order->code,
                 'po_code' => $order->purchaseOrder->code,
                 'status' => $order->status,
+                'harga_ongkir' => $vendor->harga_ongkir,
                 'tanggal_order' => $order->created_at,
                 'line_items' => $lineItems
             ],
