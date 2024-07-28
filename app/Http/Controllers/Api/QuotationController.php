@@ -125,7 +125,7 @@ class QuotationController extends Controller
                 'created_at' => $quotation->created_at->format('d-m-Y'),
                 'total_price' => $quotation->purchaseRequest->lineItems->sum(function ($lineItem) {
                     return $lineItem->quantity * $lineItem->product->commercialInfo->price;
-                }),
+                }) + $hargaOngkir,
                 'harga_ongkir' => $hargaOngkir,
                 'line_items' => $lineItemsData
             ]
@@ -281,7 +281,7 @@ class QuotationController extends Controller
             'code' => $quotation->code,
             'company_name' => $quotation->purchaseRequest->user->userCompanies->first()->company->name ?? null,
             'updated_at' => $quotation->created_at->format('d-m-Y'),
-            'total_price' => $total_price,
+            'total_price' => $total_price + $quotation->harga_ongkir,
             'harga_ongkir' => $quotation->harga_ongkir,
             'pdf' => asset('pdf/quotation/' . $quotation->quo_doc) ?? null, // URL for accessing PDF
             'line_items' => $quotationData

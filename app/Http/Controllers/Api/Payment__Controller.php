@@ -77,11 +77,12 @@ class Payment__Controller extends Controller
             ->join('request_for_qoutations as rfq', 'rfq.id', '=', 'po.request_for_qoutations_id')
             ->join('users', 'rfq.user_id', '=', 'users.id')
             ->join('master_vendors as mv', 'users.id', '=', 'mv.user_id')
-            ->select('users.id as id', 'users.name as name', 'users.telp as telp', 'mv.alamat as alamat', 'mv.bank as bank', 'mv.rekening as no_rek')
+            ->select('users.id as id', 'users.name as name', 'users.telp as telp', 'mv.alamat as alamat', 'mv.bank as bank', 'mv.rekening as no_rek','rfq.harga_ongkir as harga_ongkir')
             ->where('orders.id', $id)
             ->first();
 
-        $total_bayar = $lineItems->sum('amount');
+        $total_bayar = $lineItems->sum('amount') + $vendor->harga_ongkir;
+
 
         $pdfName = url('pdf/invoice/' . $payment->invoice_pdf) ?? null;
 
@@ -153,11 +154,11 @@ class Payment__Controller extends Controller
             ->join('request_for_qoutations as rfq', 'rfq.id', '=', 'po.request_for_qoutations_id')
             ->join('users', 'rfq.user_id', '=', 'users.id')
             ->join('master_vendors as mv', 'users.id', '=', 'mv.user_id')
-            ->select('users.id as id', 'users.name as name', 'users.telp as telp', 'mv.alamat as alamat', 'mv.bank as bank', 'mv.rekening as no_rek')
+            ->select('users.id as id', 'users.name as name', 'users.telp as telp', 'mv.alamat as alamat', 'mv.bank as bank', 'mv.rekening as no_rek' ,'rfq.harga_ongkir as harga_ongkir')
             ->where('orders.id', $id)
             ->first();
 
-        $total_bayar = $lineItems->sum('amount');
+        $total_bayar = $lineItems->sum('amount') + $vendor->harga_ongkir;
 
 
         // Load view PDF dengan data quotation
