@@ -685,13 +685,13 @@ class AuthController extends Controller
             $user_id = $newUser->id;
 
             // return response()->json(['token' => $token, 'token_type' => 'Bearer']);
-            return redirect()->away(env('URL_FRONT').'auth/google/redirect?token=' . $token . '&role.name=' . $roleName . '&user_id=' . $user_id);
+            return redirect()->away(env('URL_FRONT').'auth/google/redirect?token=' . $token . '&role=' . $roleName . '&user_id=' . $user_id);
         }
 
         $token = JWTAuth::fromUser($userFromDatabase);
         $user_id = $userFromDatabase->id;
 
-        return redirect()->away(env('URL_FRONT').'auth/google/redirect?token=' . $token . '&role.name=' . $roleName . '&user_id=' . $user_id);
+        return redirect()->away(env('URL_FRONT').'auth/google/redirect?token=' . $token . '&role=' . $roleName . '&user_id=' . $user_id);
 
         // return response()->json([
         //     'token' => $token,
