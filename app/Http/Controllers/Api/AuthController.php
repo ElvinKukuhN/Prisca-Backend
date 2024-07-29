@@ -472,9 +472,9 @@ class AuthController extends Controller
         }
 
         $userCompany->update([
-            'divisi_code' => $request->divisi_code,
-            'departemen_code' => $request->departemen_code,
-            'address' => $request->address
+            'divisi_code' => $request->divisi_code ?? '',
+            'departemen_code' => $request->departemen_code ?? '',
+            'address' => $request->address ??''
         ]);
 
         $companyAddress = CompanyAddress::create([
