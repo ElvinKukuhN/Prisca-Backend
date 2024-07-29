@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
 use App\Models\CompanyAddress;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
@@ -610,37 +611,59 @@ class AuthController extends Controller
             }
         }
     }
-
-    public function redirect()
+    public function redirectToGoogleVendor()
     {
+        config(['services.google.redirect' => env('GOOGLE_REDIRECT_URI_VENDOR')]);
+
         return Socialite::driver('google')->redirect();
     }
 
-    public function callback(Request $request)
+    // Handle Google callback for Vendor
+    public function handleGoogleCallbackVendor()
     {
-        // Google user object dari google
-        $userFromGoogle = Socialite::driver('google')->user();
+        return $this->handleGoogleCallback(config(['services.google.redirect' => env('GOOGLE_REDIRECT_URI_VENDOR')]),'vendor');
+    }
 
-        // Ambil user dari database berdasarkan google user id
+    // Redirect to Google for Company
+    public function redirectToGoogleCompany()
+    {
+        return Socialite::driver('google')
+            ->with(['redirect_uri' => env('GOOGLE_REDIRECT_URI_COMPANY')])
+            ->redirect();
+    }
+
+    // Handle Google callback for Company
+    public function handleGoogleCallbackCompany()
+    {
+        return $this->handleGoogleCallback(config(['services.google.redirect' => env('GOOGLE_REDIRECT_URI_COMPANY')]),'company');
+    }
+
+    public function handleGoogleCallback($redirectUrl, $roleName)
+    {
+        $userFromGoogle = Socialite::driver('google')->user();;
+
+        $role = Role::where('name', $roleName)->first();
+
         $userFromDatabase = User::where('google_id', $userFromGoogle->getId())->first();
 
-        // Jika tidak ada user, maka buat user baru
+        $password = 11111111;
+
         if (!$userFromDatabase) {
             $newUser = new User([
                 'google_id' => $userFromGoogle->getId(),
                 'name' => $userFromGoogle->getName(),
                 'email' => $userFromGoogle->getEmail(),
+                'role_id' => $role->id,
+                'password' => Hash::make($password),
             ]);
 
             $newUser->save();
 
-            // Generate JWT token for the new user
             $token = JWTAuth::fromUser($newUser);
 
             return response()->json(['token' => $token, 'token_type' => 'Bearer']);
         }
 
-        // Generate JWT token for the existing user
         $token = JWTAuth::fromUser($userFromDatabase);
 
         return response()->json([
@@ -648,4 +671,5 @@ class AuthController extends Controller
             'token_type' => 'Bearer'
         ]);
     }
+
 }

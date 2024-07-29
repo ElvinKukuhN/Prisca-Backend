@@ -43,8 +43,10 @@ Route::post('/userRegister', [AuthController::class, 'userRegister'])->name('use
 Route::post('/vendorRegister', [AuthController::class, 'vendorRegister'])->name('vendorRegister');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/auth/google/redirect', [AuthController::class, 'redirect'])->middleware(['web'])->name('redirect');
-Route::get('/auth/google/callback', [AuthController::class, 'callback'])->name('callback');
+Route::get('/auth/google/redirectVendor', [AuthController::class, 'redirectToGoogleVendor'])->middleware(['web','api'])->name('redirectVendor');
+Route::get('/auth/google/redirectCompany', [AuthController::class, 'redirectToGoogleCompany'])->middleware(['web','api'])->name('redirectCompany');
+Route::get('/auth/google/callbackVendor', [AuthController::class, 'handleGoogleCallbackVendor'])->middleware(['web','api'])->name('callbackVendor');
+Route::get('/auth/google/callbackCompany', [AuthController::class, 'handleGoogleCallbackCompany'])->middleware(['web','api'])->name('callbackCompany');
 
 
 Route::middleware('auth:api', 'cors',)->group(function () {
