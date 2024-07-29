@@ -466,7 +466,7 @@ class AuthController extends Controller
                 UserCompany::create([
                     'user_id' => $user->id,
                     'company_code' => $companyCode,
-                    'address' => $request->address
+                    'address' => $request->address ?? ''
                 ]);
             }
         }
