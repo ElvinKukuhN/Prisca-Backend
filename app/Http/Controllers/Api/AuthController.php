@@ -236,6 +236,19 @@ class AuthController extends Controller
         $masterVendor = MasterVendor::where('user_id', $user->id)->first();
 
         // Lanjutkan dengan logika Anda di sini jika token bearer ada dan tidak kosong
+        $vendor = [
+            'id' => $masterVendor->id,
+            'user_id' => $masterVendor->user_id,
+            'alamat' => $masterVendor->alamat ?? null,
+            'bidang_usaha' => $masterVendor->bidang_usaha ?? null,
+            'tanggal_berdiri' =>$masterVendor->tanggal_berdiri ?? null,
+            'npwp' =>$masterVendor->npwp ?? null,
+            'siup' =>$masterVendor->siup ?? null,
+            'website' =>$masterVendor->website ?? null,
+            'bank' =>$masterVendor->bank ?? null,
+            'rekening' =>$masterVendor->rekening ?? null,
+        ];
+
 
         return response()->json([
             'success' => true,
@@ -244,7 +257,7 @@ class AuthController extends Controller
                 'name'  => $user->name,
                 'email' => $user->email,
                 'telp' => $user->telp,
-                'master' => $masterVendor,
+                'master' => $vendor,
                 'role'  => [
                     'id'    => $user->role->id,
                     'name'  => $user->role->name
@@ -670,22 +683,48 @@ class AuthController extends Controller
         $frontendUrl = $this->getFrontendUrlFromHeader(request());
 
         if (!$userFromDatabase) {
-            $newUser = new User([
-                'google_id' => $userFromGoogle->getId(),
-                'name' => $userFromGoogle->getName(),
-                'email' => $userFromGoogle->getEmail(),
-                'role_id' => $role->id,
-                'password' => Hash::make($password),
-            ]);
+            if ($roleName == 'company') {
+                # code...
+                $newUser = new User([
+                    'google_id' => $userFromGoogle->getId(),
+                    'name' => $userFromGoogle->getName(),
+                    'email' => $userFromGoogle->getEmail(),
+                    'role_id' => $role->id,
+                    'password' => Hash::make($password),
+                ]);
 
-            $newUser->save();
+                $newUser->save();
 
-            $token = JWTAuth::fromUser($newUser);
+                $token = JWTAuth::fromUser($newUser);
 
-            $user_id = $newUser->id;
+                $user_id = $newUser->id;
 
-            // return response()->json(['token' => $token, 'token_type' => 'Bearer']);
-            return redirect()->away(env('URL_FRONT').'auth/google/redirect?token=' . $token . '&role=' . $roleName . '&user_id=' . $user_id);
+                // return response()->json(['token' => $token, 'token_type' => 'Bearer']);
+                return redirect()->away(env('URL_FRONT').'auth/google/redirect?token=' . $token . '&role=' . $roleName . '&user_id=' . $user_id);
+            }elseif ($roleName == 'vendor') {
+                $newUser = new User([
+                    'google_id' => $userFromGoogle->getId(),
+                    'name' => $userFromGoogle->getName(),
+                    'email' => $userFromGoogle->getEmail(),
+                    'role_id' => $role->id,
+                    'password' => Hash::make($password),
+                ]);
+
+                $newUser->save();
+
+                $token = JWTAuth::fromUser($newUser);
+
+                $user_id = $newUser->id;
+
+                if ($newUser) {
+                    MasterVendor::create([
+                        'user_id' => $user_id,
+                    ]);
+                }
+
+                // return response()->json(['token' => $token, 'token_type' => 'Bearer']);
+                return redirect()->away(env('URL_FRONT').'auth/google/redirect?token=' . $token . '&role=' . $roleName . '&user_id=' . $user_id);
+            }
         }
 
         $token = JWTAuth::fromUser($userFromDatabase);
