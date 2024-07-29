@@ -174,10 +174,37 @@ class Payment__Controller extends Controller
             $payment->save();
         }
 
+        $buyerMap = [
+            'id' => $buyer->id,
+            'name' => $buyer->name,
+            'telp' => $buyer->telp,
+            'alamat' => $companyAddress
+        ];
+
         // Return response API
         return response()->json([
             'message' => 'Invoice PDF berhasil dibuat dan dikirim ke pembeli.',
-            'pdf_url' => url('pdf/invoice/' . $pdfName) // URL untuk mengakses PDF
+            'pdf_url' => url('pdf/invoice/' . $pdfName), // URL untuk mengakses PDF
+            'data' => [
+                    'payment' => [
+                        'id' => $payment->id,
+                        'order_id' => $payment->order_id,
+                        'no_invoice' => $payment->no_invoice,
+                        'bukti' => url('images/' . $payment->bukti) ?? null,
+                        'status' => $payment->status,
+                        'total_bayar' => $total_bayar,
+                        'batas_bayar' => $batas_bayar->format('d-m-Y'),
+                        'pdf_url' => $pdfName,
+                        'created_at' => $payment->created_at
+                    ],
+                    'code' => [
+                        'so_code' => $payment->order->code,
+                        'po_code' => $payment->order->purchaseOrder->code
+                    ],
+                    'buyer' => $buyerMap,
+                    'vendor' => $vendor,
+                    'line_items' => $lineItems,
+                ]
         ]);
     }
 
