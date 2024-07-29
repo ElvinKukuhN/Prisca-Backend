@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use PhpParser\Node\Stmt\Return_;
 
 class AuthController extends Controller
 {
@@ -661,15 +662,24 @@ class AuthController extends Controller
 
             $token = JWTAuth::fromUser($newUser);
 
-            return response()->json(['token' => $token, 'token_type' => 'Bearer']);
+
+            // return response()->json(['token' => $token, 'token_type' => 'Bearer']);
         }
 
         $token = JWTAuth::fromUser($userFromDatabase);
 
-        return response()->json([
-            'token' => $token,
-            'token_type' => 'Bearer'
-        ]);
+        $frontendUrl = $this->getFrontendUrlFromHeader(request());
+        return redirect()->away($frontendUrl . '?token=' . $token);
+
+        // return response()->json([
+        //     'token' => $token,
+        //     'token_type' => 'Bearer'
+        // ]);
     }
 
+    public function getFrontendUrlFromHeader($request) {
+        $origin = $request->header('Origin');
+
+        Return $origin;
+    }
 }
