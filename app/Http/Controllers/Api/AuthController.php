@@ -415,12 +415,12 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'telp' => $user->telp,
                 'company' => [
-                    'address' => $userCompany->address,
-                    'company_code' => $userCompany->company->code,
+                    'address' => $userCompany->address ?? null,
+                    'company_code' => $userCompany->company->code ?? null,
                     'company_name' => $userCompany->company->name ?? null,
-                    'divisi_code' => $userCompany->divisi_code,
+                    'divisi_code' => $userCompany->divisi_code ?? null,
                     'divisi_name' => $userCompany->divisi->name ?? null,
-                    'departemen_code' => $userCompany->departemen_code,
+                    'departemen_code' => $userCompany->departemen_code ?? null,
                     'departemen_name' => $userCompany->departemen->name ?? null
                 ],
                 'role'  => [
@@ -451,6 +451,25 @@ class AuthController extends Controller
             'email' => $request->email ?? $user->email,
             'telp' => $request->telp ?? $user->telp
         ]);
+
+        if (!$userCompany) {
+            # code...
+            $companyCode = rand(100, 999);
+
+            $company = Company::create([
+                'code' => $companyCode,
+                'name' => $request->company_name
+            ]);
+
+            if ($company) {
+                # code...
+                UserCompany::create([
+                    'user_id' => $user->id,
+                    'company_code' => $companyCode,
+                    'address' => $request->address
+                ]);
+            }
+        }
 
         $userCompany->update([
             'divisi_code' => $request->divisi_code,
@@ -622,7 +641,7 @@ class AuthController extends Controller
     // Handle Google callback for Vendor
     public function handleGoogleCallbackVendor()
     {
-        return $this->handleGoogleCallback(config(['services.google.redirect' => env('GOOGLE_REDIRECT_URI_VENDOR')]),'vendor');
+        return $this->handleGoogleCallback(config(['services.google.redirect' => env('GOOGLE_REDIRECT_URI_VENDOR')]), 'vendor');
     }
 
     // Redirect to Google for Company
@@ -636,7 +655,7 @@ class AuthController extends Controller
     // Handle Google callback for Company
     public function handleGoogleCallbackCompany()
     {
-        return $this->handleGoogleCallback(config(['services.google.redirect' => env('GOOGLE_REDIRECT_URI_COMPANY')]),'company');
+        return $this->handleGoogleCallback(config(['services.google.redirect' => env('GOOGLE_REDIRECT_URI_COMPANY')]), 'company');
     }
 
     public function handleGoogleCallback($redirectUrl, $roleName)
@@ -646,7 +665,7 @@ class AuthController extends Controller
         $role = Role::where('name', $roleName)->first();
 
         $userFromDatabase = User::where('google_id', $userFromGoogle->getId())->first();
-        $role=$role->name;
+        $role = $role->name;
         $password = 11111111;
         $frontendUrl = $this->getFrontendUrlFromHeader(request());
 
@@ -666,13 +685,13 @@ class AuthController extends Controller
             $user_id = $newUser->id;
 
             // return response()->json(['token' => $token, 'token_type' => 'Bearer']);
-            return redirect()->away('http://localhost:9000/auth/google/redirect?token=' . $token.'&role.name='.$role.'&user_id='.$user_id);
+            return redirect()->away('http://localhost:9000/auth/google/redirect?token=' . $token . '&role.name=' . $role . '&user_id=' . $user_id);
         }
 
         $token = JWTAuth::fromUser($userFromDatabase);
         $user_id = $userFromDatabase->id;
 
-        return redirect()->away('http://localhost:9000/auth/google/redirect?token=' . $token.'&role.name='.$role.'&user_id='.$user_id);
+        return redirect()->away('http://localhost:9000/auth/google/redirect?token=' . $token . '&role.name=' . $role . '&user_id=' . $user_id);
 
         // return response()->json([
         //     'token' => $token,
@@ -680,9 +699,10 @@ class AuthController extends Controller
         // ]);
     }
 
-    public function getFrontendUrlFromHeader($request) {
+    public function getFrontendUrlFromHeader($request)
+    {
         $origin = $request->header('Origin');
 
-        Return $origin;
+        return $origin;
     }
 }
