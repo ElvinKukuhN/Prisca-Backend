@@ -665,13 +665,13 @@ class AuthController extends Controller
 
 
             // return response()->json(['token' => $token, 'token_type' => 'Bearer']);
-            return redirect()->away('http://localhost:9000/dashboard?token=' . $token);
+            return redirect()->away('http://localhost:9000/auth/google/redirect?token=' . $token);
         }
 
         $token = JWTAuth::fromUser($userFromDatabase);
 
 
-        return redirect()->away('http://localhost:9000/dashboard?token=' . $token);
+        return redirect()->away('http://localhost:9000/auth/google/redirect?token=' . $token);
 
         // return response()->json([
         //     'token' => $token,
