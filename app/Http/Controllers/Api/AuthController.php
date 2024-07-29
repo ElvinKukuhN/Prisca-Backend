@@ -646,7 +646,7 @@ class AuthController extends Controller
         $role = Role::where('name', $roleName)->first();
 
         $userFromDatabase = User::where('google_id', $userFromGoogle->getId())->first();
-
+        $role=$role->name;
         $password = 11111111;
         $frontendUrl = $this->getFrontendUrlFromHeader(request());
 
@@ -663,15 +663,16 @@ class AuthController extends Controller
 
             $token = JWTAuth::fromUser($newUser);
 
+            $user_id = $newUser->id;
 
             // return response()->json(['token' => $token, 'token_type' => 'Bearer']);
-            return redirect()->away('http://localhost:9000/auth/google/redirect?token=' . $token);
+            return redirect()->away('http://localhost:9000/auth/google/redirect?token=' . $token.'&role.name='.$role.'&user_id='.$user_id);
         }
 
         $token = JWTAuth::fromUser($userFromDatabase);
+        $user_id = $userFromDatabase->id;
 
-
-        return redirect()->away('http://localhost:9000/auth/google/redirect?token=' . $token);
+        return redirect()->away('http://localhost:9000/auth/google/redirect?token=' . $token.'&role.name='.$role.'&user_id='.$user_id);
 
         // return response()->json([
         //     'token' => $token,
