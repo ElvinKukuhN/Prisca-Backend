@@ -648,6 +648,7 @@ class AuthController extends Controller
         $userFromDatabase = User::where('google_id', $userFromGoogle->getId())->first();
 
         $password = 11111111;
+        $frontendUrl = $this->getFrontendUrlFromHeader(request());
 
         if (!$userFromDatabase) {
             $newUser = new User([
@@ -664,12 +665,13 @@ class AuthController extends Controller
 
 
             // return response()->json(['token' => $token, 'token_type' => 'Bearer']);
+            return redirect()->away('http://localhost:9000/dashboard?token=' . $token);
         }
 
         $token = JWTAuth::fromUser($userFromDatabase);
 
-        $frontendUrl = $this->getFrontendUrlFromHeader(request());
-        return redirect()->away($frontendUrl . '?token=' . $token);
+
+        return redirect()->away('http://localhost:9000/dashboard?token=' . $token);
 
         // return response()->json([
         //     'token' => $token,
