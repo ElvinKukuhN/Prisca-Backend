@@ -8,9 +8,10 @@ use App\Models\Company;
 use App\Models\UserCompany;
 use App\Models\MasterVendor;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\CompanyAddress;
 use Illuminate\Mail\Message;
+use App\Models\CompanyAddress;
+use App\Http\Controllers\Controller;
+use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
@@ -608,5 +609,43 @@ class AuthController extends Controller
                 ], 200);
             }
         }
+    }
+
+    public function redirect()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function callback(Request $request)
+    {
+        // Google user object dari google
+        $userFromGoogle = Socialite::driver('google')->user();
+
+        // Ambil user dari database berdasarkan google user id
+        $userFromDatabase = User::where('google_id', $userFromGoogle->getId())->first();
+
+        // Jika tidak ada user, maka buat user baru
+        if (!$userFromDatabase) {
+            $newUser = new User([
+                'google_id' => $userFromGoogle->getId(),
+                'name' => $userFromGoogle->getName(),
+                'email' => $userFromGoogle->getEmail(),
+            ]);
+
+            $newUser->save();
+
+            // Generate JWT token for the new user
+            $token = JWTAuth::fromUser($newUser);
+
+            return response()->json(['token' => $token, 'token_type' => 'Bearer']);
+        }
+
+        // Generate JWT token for the existing user
+        $token = JWTAuth::fromUser($userFromDatabase);
+
+        return response()->json([
+            'token' => $token,
+            'token_type' => 'Bearer'
+        ]);
     }
 }
