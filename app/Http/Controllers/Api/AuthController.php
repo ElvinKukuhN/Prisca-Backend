@@ -496,11 +496,11 @@ class AuthController extends Controller
                     'telp' => $user->telp,
                     'company' => [
                         'address' => $userCompany->address ?? null,
-                        'company_code' => $userCompany->company->code,
+                        'company_code' => $userCompany->company->code ?? null,
                         'company_name' => $userCompany->company->name ?? null,
-                        'divisi_code' => $userCompany->divisi_code,
+                        'divisi_code' => $userCompany->divisi_code ?? null,
                         'divisi_name' => $userCompany->divisi->name ?? null,
-                        'departemen_code' => $userCompany->departemen_code,
+                        'departemen_code' => $userCompany->departemen_code ?? null,
                         'departemen_name' => $userCompany->departemen->name ?? null
                     ],
                     'role'  => [
