@@ -129,7 +129,7 @@ WORKDIR /var/www
 COPY composer.json composer.lock ./
 
 # Install dependencies
-RUN composer install --no-scripts --no-autoloader
+# RUN composer install --no-scripts --no-autoloader
 
 # Copy the rest of the application
 COPY . .
