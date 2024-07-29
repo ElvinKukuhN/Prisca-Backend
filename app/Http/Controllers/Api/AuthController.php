@@ -471,7 +471,7 @@ class AuthController extends Controller
             }
         }
 
-        $userCompany->update([
+        $userCompany = $userCompany->update([
             'divisi_code' => $request->divisi_code ,
             'departemen_code' => $request->departemen_code ,
             'address' => $request->address ??''
@@ -484,6 +484,7 @@ class AuthController extends Controller
 
 
         if ($user) {
+            $userCompany;
             $companyAddress;
 
             return response()->json([
