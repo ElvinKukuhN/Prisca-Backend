@@ -478,15 +478,11 @@ class AuthController extends Controller
         }
 
 
-        $companyAddress = CompanyAddress::create([
-            'user_companies_id' => $userCompany->id,
-            'address' => $request->address ?? ''
-        ]);
+        // $companyAddress = CompanyAddress::create([
+        //     'user_companies_id' => $userCompany->id,
+        //     'address' => $request->address ?? ''
+        // ]);
 
-        if ($userCompany) {
-            # code...
-            $companyAddress;
-        }
 
 
         if ($user ) {
