@@ -453,7 +453,7 @@ class AuthController extends Controller
         ]);
 
         if (!$userCompany) {
-            # code...
+            // Create a new company code
             $companyCode = rand(100, 999);
 
             $company = Company::create([
@@ -462,31 +462,26 @@ class AuthController extends Controller
             ]);
 
             if ($company) {
-                # code...
-                UserCompany::create([
+                $userCompany = UserCompany::create([
                     'user_id' => $user->id,
                     'company_code' => $companyCode,
                     'address' => $request->address ?? ''
                 ]);
             }
+        } else {
+            $userCompany->update([
+                'divisi_code' => $request->divisi_code,
+                'departemen_code' => $request->departemen_code,
+                'address' => $request->address ?? ''
+            ]);
         }
-
-        $userCompany = $userCompany->update([
-            'divisi_code' => $request->divisi_code ,
-            'departemen_code' => $request->departemen_code ,
-            'address' => $request->address ??''
-        ]);
 
         $companyAddress = CompanyAddress::create([
             'user_companies_id' => $userCompany->id,
             'address' => $request->address
         ]);
 
-
         if ($user) {
-            $userCompany;
-            $companyAddress;
-
             return response()->json([
                 'success' => true,
                 'message' => 'Profile berhasil diupdate',
@@ -494,7 +489,7 @@ class AuthController extends Controller
                     'id'    => $user->id,
                     'name'  => $user->name,
                     'email' => $user->email,
-                    'telp' => $user->telp,
+                    'telp'  => $user->telp,
                     'company' => [
                         'address' => $userCompany->address ?? null,
                         'company_code' => $userCompany->company->code ?? null,
@@ -509,10 +504,12 @@ class AuthController extends Controller
                         'name'  => $user->role->name
                     ]
                 ],
-
             ], 200);
         }
+
+        return response()->json(['error' => 'Profile gagal diupdate'], 500);
     }
+
 
     public function  userApprovalAdd(Request $request)
     {
